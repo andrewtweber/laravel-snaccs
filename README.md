@@ -70,6 +70,44 @@ Then update `config/auth.php` and set the web driver to `persistent_session`
 
 ## Todo
 
+All on GCFA:
+
+- helper functions
+- Slugged model
+- isAddress trait
+- Serialized Job/FailedJob models
+- abstract transformer (nullitem, nullcollection)
+- require password change middleware
+- mail attachments / calendar invites
+- mail service maybe
+- photo processing
+- Elastic search service, elasticquententity helper, command to reindex
+- log keeper, slack webhook url
+
+TS:
+
+- helper functions
+- abstract builder (DB transaction)
+- mobile/desktop switching
+- store in session if unauthenticated
+- Google structured data
+- shareable trait
+- social media validation
 - Website/Domain helper
 - Website validation rule
-- Serialized Job/FailedJob models
+- date range trait
+- Linode SDK
+- meta tag stuff
+- WordPress helpers
+  
+Parangi:
+
+- mediawiki helpers
+- timezone basemodel, helper class
+- cache exif, dimensions, file sizes, etc. scripts
+- validation rules
+- exif service
+- schedulable interface (copied from gcfa)
+- hasDimensions trait
+
+FerretLove

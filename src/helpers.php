@@ -5,9 +5,9 @@ use Illuminate\Support\Str;
 if (! function_exists('format_phone')) {
     /**
      * @param string|null $number
-     * @param string      $country
+     * @param string|null $country
      *
-     * @return false|string|string[]|null
+     * @return string|null
      */
     function format_phone(?string $number, string $country = null)
     {
@@ -31,7 +31,7 @@ if (! function_exists('format_phone')) {
         }
 
         $extension = null;
-        $format    = false;
+        $format = false;
 
         switch ($country) {
             case 'US':
@@ -41,9 +41,9 @@ if (! function_exists('format_phone')) {
                 }
 
                 if (Str::contains($number, 'EXT')) {
-                    $parts     = explode('EXT', $number);
+                    $parts = explode('EXT', $number);
                     $extension = array_pop($parts);
-                    $number    = implode('', $parts);
+                    $number = implode('', $parts);
                 }
 
                 $format = '(XXX) XXX-YYYY';
@@ -59,7 +59,7 @@ if (! function_exists('format_phone')) {
         }
 
         if ($format) {
-            $start     = 0;
+            $start = 0;
             $formatted = '';
 
             for ($i = 0; $i < strlen($format); ++$i) {
@@ -82,5 +82,36 @@ if (! function_exists('format_phone')) {
         }
 
         return $number;
+    }
+}
+
+if (! function_exists('ordinal')) {
+    /**
+     * @param int|null $number
+     *
+     * @return string|null
+     */
+    function ordinal(?int $number): ?string
+    {
+        if ($number === null) {
+            return null;
+        }
+
+        $digit = $number % 10;
+
+        $suffix = match ($digit) {
+            1 => 'st',
+            2 => 'nd',
+            3 => 'rd',
+            default => 'th'
+        };
+
+        // 11-19 all end in 'th'
+        $tens = ($number % 100) - $digit;
+        if ($tens === 10) {
+            $suffix = 'th';
+        }
+
+        return $number . $suffix;
     }
 }
