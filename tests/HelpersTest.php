@@ -2,6 +2,11 @@
 
 namespace Tests;
 
+/**
+ * Class HelpersTest
+ *
+ * @package Tests
+ */
 class HelpersTest extends TestCase
 {
     /**
@@ -62,6 +67,28 @@ class HelpersTest extends TestCase
     /**
      * @test
      *
+     * @param string|null $number
+     * @param string|null $expected
+     *
+     * @testWith [null,            null]
+     *           ["15551112222",   "(555) 111-2222"]
+     *           ["5551112222",    "(555) 111-2222"]
+     *           ["555STANLEY",    "(555) STA-NLEY"]
+     *           ["555.111.2222",  "(555) 111-2222"]
+     *           ["555-111-2222",  "(555) 111-2222"]
+     *           ["555 111 2222",  "(555) 111-2222"]
+     *           ["(555)1112222",  "(555) 111-2222"]
+     *           [" 15551112222 ", "(555) 111-2222"]
+     *           [" 5551112222 ",  "(555) 111-2222"]
+     */
+    public function format_phone(?string $number, ?string $expected)
+    {
+        $this->assertSame($expected, format_phone($number));
+    }
+
+    /**
+     * @test
+     *
      * @param int|null    $input
      * @param string|null $expected
      *
@@ -117,10 +144,11 @@ class HelpersTest extends TestCase
      * @param string|null $expected
      *
      * @testWith [null, null]
+     *           ["google.com", null]
      *           ["http://google.com", "google.com"]
      *           ["http://www.google.com", "google.com"]
-     *           ["http://maps.google.com", "maps.google.com"]
-     *           ["http://google.com/maps", "google.com"]
+     *           ["https://maps.google.com", "maps.google.com"]
+     *           ["https://google.com/maps", "google.com"]
      */
     public function parse_domain(?string $url, ?string $expected)
     {

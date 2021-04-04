@@ -31,6 +31,7 @@ ordinal(2); // "2nd"
 ordinal(11); // "11th"
 
 // Parse domain (URL must be valid)
+// This should be paired with the website validation rule & cast
 parse_domain("http://google.com"); // "google.com"
 parse_domain("http://www.google.com"); // "google.com"
 parse_domain("http://maps.google.com"); // "maps.google.com"
@@ -46,18 +47,22 @@ Usage:
 ```php
 use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\PhoneNumber;
+use Snaccs\Casts\Website;
 
 class Account extends Model
 {
     protected $casts = [
         'phone' => PhoneNumber::class,
+        'website' => Website::class,
     ];
 }
 
-// Example:
+// Examples:
 $account = new Account();
 $account->phone = "1.555.111.2222"; // Stored as '5551112222'
 echo $account->phone; // Displayed as "(555) 111-2222"
+
+$account->website = "google.com"; // Stored as 'http://google.com'
 ```
 
 ## Models
@@ -112,7 +117,7 @@ Then update `config/auth.php` and set the web driver to `persistent_session`
 
 All on GCFA:
 
-- helper functions
+- app/Support/Helpers class
 - Slugged model
 - isAddress trait
 - abstract transformer (nullitem, nullcollection)
@@ -125,7 +130,7 @@ All on GCFA:
 
 TS:
 
-- helper functions
+- app/Helpers class
 - abstract builder (DB transaction)
 - mobile/desktop switching
 - store in session if unauthenticated
@@ -140,6 +145,7 @@ TS:
   
 Parangi:
 
+- app/Helpers class
 - timezone basemodel, helper class
 - cache exif, dimensions, file sizes, etc. scripts
 - validation rules
