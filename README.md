@@ -55,6 +55,16 @@ $account->phone = "1.555.111.2222"; // Stored as '5551112222'
 echo $account->phone; // Displayed as "(555) 111-2222"
 ```
 
+## Models
+
+If you use the database to track jobs and failed jobs, you can use the
+`Job` and `FailedJob` models to easily handle them. For example, in a controller
+you could simply fetch `Job::count()` to determine if any jobs are currently
+queued or `FailedJob::count()` to see if any have failed. 
+
+The implementation is up to you, but these models help simplify some of the 
+serialization, date casting, etc.
+
 ## Persistent Session
 
 The regular Laravel session guard logs the user out of ALL sessions on every device
@@ -100,7 +110,6 @@ All on GCFA:
 - helper functions
 - Slugged model
 - isAddress trait
-- Serialized Job/FailedJob models
 - abstract transformer (nullitem, nullcollection)
 - require password change middleware
 - mail attachments / calendar invites
