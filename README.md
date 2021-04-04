@@ -17,6 +17,15 @@ composer require andrewtweber/laravel-snaccs
 Some helper methods:
 
 ```php
+// Format bytes (precision defaults to 2)
+format_bytes(-100); // RuntimeException
+format_bytes(1); // "1"
+format_bytes(1024); // "1 kb"
+format_bytes(1793); // "1.75 kb"
+format_bytes(1793, 3); // "1.751 kb"
+format_bytes(1024*1024*1024); // "1 GB"
+
+// Ordinal
 ordinal(1); // "1st"
 ordinal(2); // "2nd"
 ordinal(11); // "11th"
@@ -30,9 +39,10 @@ and format them nicely when displaying them.
 Usage:
 
 ```php
+use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\PhoneNumber;
 
-class Account extends Eloquent
+class Account extends Model
 {
     protected $casts = [
         'phone' => PhoneNumber::class,
@@ -117,7 +127,6 @@ TS:
   
 Parangi:
 
-- helper functions
 - mediawiki helpers
 - timezone basemodel, helper class
 - cache exif, dimensions, file sizes, etc. scripts
