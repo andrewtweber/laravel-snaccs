@@ -12,6 +12,16 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require andrewtweber/laravel-snaccs
 ```
 
+## Helpers
+
+Some helper methods:
+
+```php
+ordinal(1); // "1st"
+ordinal(2); // "2nd"
+ordinal(11); // "11th"
+```
+
 ## Casts
 
 Format phone numbers. This will strip them down when storing in the database
@@ -28,6 +38,11 @@ class Account extends Eloquent
         'phone' => PhoneNumber::class,
     ];
 }
+
+// Example:
+$account = new Account();
+$account->phone = "1.555.111.2222"; // Stored as '5551112222'
+echo $account->phone; // Displayed as "(555) 111-2222"
 ```
 
 ## Persistent Session
@@ -102,6 +117,7 @@ TS:
   
 Parangi:
 
+- helper functions
 - mediawiki helpers
 - timezone basemodel, helper class
 - cache exif, dimensions, file sizes, etc. scripts

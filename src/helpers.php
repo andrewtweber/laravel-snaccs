@@ -2,6 +2,34 @@
 
 use Illuminate\Support\Str;
 
+if (! function_exists('format_bytes')) {
+    /**
+     * Convert bytes to kb, MB, etc.
+     *
+     * @param int|null $bytes
+     * @param int      $precision
+     *
+     * @return string|null
+     */
+    function format_bytes(?int $bytes, int $precision = 2): ?string
+    {
+        assert($bytes >= 0, new \RuntimeException("Bytes must be an integer >= 0"));
+        assert($precision >= 0, new \RuntimeException("Precision must be an integer >= 0"));
+
+        if ($bytes === null) {
+            return null;
+        }
+        if ($bytes === 0) {
+            return '0';
+        }
+
+        $base = log($bytes, 1024);
+        $suffixes = ['', ' kb', ' MB', ' GB', ' TB'];
+
+        return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
+    }
+}
+
 if (! function_exists('format_phone')) {
     /**
      * @param string|null $number
@@ -9,7 +37,7 @@ if (! function_exists('format_phone')) {
      *
      * @return string|null
      */
-    function format_phone(?string $number, string $country = null)
+    function format_phone(?string $number, string $country = null): ?string
     {
         if ($number === null) {
             return null;
@@ -100,15 +128,15 @@ if (! function_exists('ordinal')) {
         $digit = $number % 10;
 
         $suffix = match ($digit) {
-            1 => 'st',
-            2 => 'nd',
-            3 => 'rd',
+            -1, 1 => 'st',
+            -2, 2 => 'nd',
+            -3, 3 => 'rd',
             default => 'th'
         };
 
         // 11-19 all end in 'th'
         $tens = ($number % 100) - $digit;
-        if ($tens === 10) {
+        if (abs($tens) === 10) {
             $suffix = 'th';
         }
 
