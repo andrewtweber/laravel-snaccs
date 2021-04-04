@@ -143,3 +143,23 @@ if (! function_exists('ordinal')) {
         return $number . $suffix;
     }
 }
+
+if (! function_exists('parse_domain')) {
+    /**
+     * @param string|null $url
+     *
+     * @return string|null
+     */
+    function parse_domain(?string $url): ?string
+    {
+        if ($url === null) {
+            return null;
+        }
+
+        $domain = parse_url($url, PHP_URL_HOST);
+
+        return (Str::startsWith($domain, 'www.'))
+            ? substr($domain, 4)
+            : $domain;
+    }
+}

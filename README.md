@@ -29,6 +29,11 @@ format_bytes(1024*1024*1024); // "1 GB"
 ordinal(1); // "1st"
 ordinal(2); // "2nd"
 ordinal(11); // "11th"
+
+// Parse domain (URL must be valid)
+parse_domain("http://google.com"); // "google.com"
+parse_domain("http://www.google.com"); // "google.com"
+parse_domain("http://maps.google.com"); // "maps.google.com"
 ```
 
 ## Casts
@@ -70,7 +75,7 @@ serialization, date casting, etc.
 The regular Laravel session guard logs the user out of ALL sessions on every device
 (by cycling the `remember_token`) when they logout. This solves that annoyance.
 
-Add to your `AppServiceProvider::boot` method:
+Add to your `AuthServiceProvider::boot` method:
 
 ```php
 use Illuminate\Support\Facades\Auth;
@@ -132,11 +137,9 @@ TS:
 - date range trait
 - Linode SDK
 - meta tag stuff
-- WordPress helpers
   
 Parangi:
 
-- mediawiki helpers
 - timezone basemodel, helper class
 - cache exif, dimensions, file sizes, etc. scripts
 - validation rules
@@ -144,4 +147,9 @@ Parangi:
 - schedulable interface (copied from gcfa)
 - hasDimensions trait
 
-FerretLove
+Beehive
+
+Probably should go in separate packages:
+
+- WordPress helpers (TS)
+- MediaWiki helpers (Parangi)

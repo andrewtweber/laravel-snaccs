@@ -109,4 +109,21 @@ class HelpersTest extends TestCase
     {
         $this->assertSame($expected, ordinal($input));
     }
+
+    /**
+     * @test
+     *
+     * @param string|null $url
+     * @param string|null $expected
+     *
+     * @testWith [null, null]
+     *           ["http://google.com", "google.com"]
+     *           ["http://www.google.com", "google.com"]
+     *           ["http://maps.google.com", "maps.google.com"]
+     *           ["http://google.com/maps", "google.com"]
+     */
+    public function parse_domain(?string $url, ?string $expected)
+    {
+        $this->assertSame($expected, parse_domain($url));
+    }
 }
