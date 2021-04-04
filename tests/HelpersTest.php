@@ -2,6 +2,10 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Snaccs\Models\Job;
+use Snaccs\Models\SerializedJob;
+
 /**
  * Class HelpersTest
  *
@@ -9,6 +13,22 @@ namespace Tests;
  */
 class HelpersTest extends TestCase
 {
+    /**
+     * @test
+     */
+    public function class_uses_deep()
+    {
+        $job = new Job();
+
+        // Regular `class_uses` misses parent class traits
+        $this->assertTrue(in_array(SerializedJob::class, class_uses($job)));
+        $this->assertFalse(in_array(HasAttributes::class, class_uses($job)));
+
+        // `class_uses_deep` captures them
+        $this->assertTrue(in_array(SerializedJob::class, class_uses_deep($job)));
+        $this->assertTrue(in_array(HasAttributes::class, class_uses_deep($job)));
+    }
+
     /**
      * @test
      *

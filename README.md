@@ -30,6 +30,9 @@ ordinal(1); // "1st"
 ordinal(2); // "2nd"
 ordinal(11); // "11th"
 
+// Phone numbers
+format_phone("5551112222"); // "(555) 111-2222"
+
 // Parse domain (URL must be valid)
 // This should be paired with the website validation rule & cast
 parse_domain("http://google.com"); // "google.com"
