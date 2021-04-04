@@ -77,7 +77,7 @@ if (! function_exists('format_phone')) {
             return null;
         }
 
-        $number = trim(preg_replace('/[^0-9A-Za-z]/', '', $number));
+        $number = preg_replace('/[^0-9A-Z]/', '', strtoupper($number));
 
         if (! $number) {
             return '';
@@ -195,5 +195,27 @@ if (! function_exists('parse_domain')) {
         return (Str::startsWith($domain, 'www.'))
             ? substr($domain, 4)
             : $domain;
+    }
+}
+
+if (! function_exists('parse_phone')) {
+    /**
+     * @param string|null $value
+     *
+     * @return string|null
+     */
+    function parse_phone(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
+
+        if (strlen($value) == 11 && substr($value, 0, 1) == 1) {
+            $value = substr($value, 1);
+        }
+
+        return $value;
     }
 }

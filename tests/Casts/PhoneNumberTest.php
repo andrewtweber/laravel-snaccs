@@ -19,8 +19,12 @@ class PhoneNumberTest extends TestCase
      * @param string|null $expected
      *
      * @testWith [null,            null]
+     *           ["",              ""]
+     *           ["   ",           ""]
+     *           ["---",           ""]
      *           ["15551112222",   "(555) 111-2222"]
      *           ["5551112222",    "(555) 111-2222"]
+     *           ["555stanley",    "(555) STA-NLEY"]
      *           ["555STANLEY",    "(555) STA-NLEY"]
      *           ["555.111.2222",  "(555) 111-2222"]
      *           ["555-111-2222",  "(555) 111-2222"]
@@ -43,9 +47,13 @@ class PhoneNumberTest extends TestCase
      * @param string|null $expected
      *
      * @testWith [null,               null]
+     *           ["",                 ""]
+     *           ["   ",              ""]
+     *           ["---",              ""]
      *           ["1-555-111-2222",   "5551112222"]
      *           ["555.111.2222",     "5551112222"]
      *           ["555-111-2222",     "5551112222"]
+     *           ["555-stanley",      "555STANLEY"]
      *           ["555-STANLEY",      "555STANLEY"]
      *           ["555 111 2222",     "5551112222"]
      *           ["(555) 111-2222",   "5551112222"]

@@ -36,17 +36,6 @@ class PhoneNumber implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value === null) {
-            return null;
-        }
-
-        $value = strtoupper($value);
-        $value = preg_replace('/[^0-9A-Z]/', '', $value);
-
-        if (strlen($value) == 11 && substr($value, 0, 1) == 1) {
-            $value = substr($value, 1);
-        }
-
-        return $value;
+        return parse_phone($value);
     }
 }
