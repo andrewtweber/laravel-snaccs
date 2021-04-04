@@ -1,0 +1,40 @@
+{
+    "name": "andrewtweber/laravel-snaccs",
+    "type": "library",
+    "description": "Some small Laravel helpers",
+    "keywords": [
+        "laravel",
+        "helpers",
+        "traits"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Weber",
+            "homepage": "https://andrew.cool"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8",
+        "laravel/framework": "^8.12"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Snaccs\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
