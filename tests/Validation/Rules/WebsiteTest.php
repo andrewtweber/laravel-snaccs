@@ -74,4 +74,19 @@ class WebsiteTest extends TestCase
 
         $this->assertFalse($rule->passes('website', $url));
     }
+
+    /**
+     * @test
+     */
+    public function message()
+    {
+        $rule = new Website();
+        $this->assertSame("The :attribute field is not a valid URL.", $rule->message());
+
+        $rule = new Website(['google.com']);
+        $this->assertSame("The :attribute field is not a valid google.com URL.", $rule->message());
+
+        $rule = new Website(['facebook.com', 'fb.com', 'fb.me']);
+        $this->assertSame("The :attribute field is not a valid facebook.com URL.", $rule->message());
+    }
 }

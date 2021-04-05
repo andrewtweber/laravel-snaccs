@@ -74,6 +74,31 @@ $account->website = "google.com"; // Stored as 'http://google.com'
 
 ## Validation
 
+Phone Number validation ignores extra characters and just checks that 7-15 digits
+are supplied. If the country is CA/US/unspecified, it also verifies that there are
+exactly ten digits (or a `1` followed by ten digits).
+
+```php
+use Snaccs\Validation\Rules\PhoneNumber;
+
+// Must be ten digits, or a `1` followed by ten digits.
+// Extra characters (dot, dash, parentheses) are ignored.
+// Blank strings and null values also pass
+$rules = [
+    'phone' => [new PhoneNumber()],
+];
+
+// Same as above except blank strings and null values will fail
+$rules = [
+    'phone' => ['required', new PhoneNumber()],
+];
+
+// Must be between 7-15 digits.
+$rules = [
+    'phone' => [new PhoneNumber('DE')],
+];
+```
+
 The Website casting should be paired with the Website validation rule.
 This validates the URL but allows them to omit the scheme (defaults to http).
 It also allows you to restrict to specific domains.
@@ -153,7 +178,7 @@ Warning: all existing users will be required to log back in.
 
 ## Todo
 
-All on GCFA:
+GCFA:
 
 - app/Support/Helpers class
 - Slugged model
@@ -187,7 +212,9 @@ Parangi:
 - schedulable interface (copied from gcfa)
 - hasDimensions trait
 
-Beehive
+Beehive:
+
+- Helpers: money format, dispatch with delay
 
 Probably should go in separate packages:
 
