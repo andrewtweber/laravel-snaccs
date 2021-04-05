@@ -173,10 +173,10 @@ class HelpersTest extends TestCase
      * @param string|null $url
      * @param string|null $expected
      *
-     * @testWith [null, null]
-     *           ["google.com", null]
-     *           ["http://google.com", "google.com"]
-     *           ["http://www.google.com", "google.com"]
+     * @testWith [null,                      null]
+     *           ["google.com",              null]
+     *           ["http://google.com",       "google.com"]
+     *           ["http://www.google.com",   "google.com"]
      *           ["https://maps.google.com", "maps.google.com"]
      *           ["https://google.com/maps", "google.com"]
      */
@@ -208,5 +208,29 @@ class HelpersTest extends TestCase
     public function parse_phone(?string $number, ?string $expected)
     {
         $this->assertSame($expected, parse_phone($number));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $website
+     * @param string|null $expected
+     *
+     * @testWith [null,                    null]
+     *           ["",                      ""]
+     *           ["   ",                   ""]
+     *           ["---",                   "http://---"]
+     *           ["http://",               ""]
+     *           ["ftp://example.com",     "ftp://example.com"]
+     *           ["http://example.com",    "http://example.com"]
+     *           ["https://example.com",   "https://example.com"]
+     *           ["example.com",           "http://example.com"]
+     *           [" example.com ",         "http://example.com"]
+     *           [" http://example.com ",  "http://example.com"]
+     *           [" https://example.com ", "https://example.com"]
+     */
+    public function parse_website(?string $website, ?string $expected)
+    {
+        $this->assertSame($expected, parse_website($website));
     }
 }

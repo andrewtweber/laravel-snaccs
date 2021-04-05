@@ -219,3 +219,27 @@ if (! function_exists('parse_phone')) {
         return $value;
     }
 }
+
+if (! function_exists('parse_website')) {
+    /**
+     * @param string|null $value
+     *
+     * @return string|null
+     */
+    function parse_website(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim($value);
+        if (strlen($value) > 0 && ! Str::contains($value, '://')) {
+            $value = 'http://' . $value;
+        }
+        if ($value == 'http://') {
+            $value = '';
+        }
+
+        return $value;
+    }
+}
