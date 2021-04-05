@@ -143,34 +143,21 @@ serialization, date casting, etc.
 The regular Laravel session guard logs the user out of ALL sessions on every device
 (by cycling the `remember_token`) when they logout. This solves that annoyance.
 
-Add this to your `AuthServiceProvider::boot` method:
+Add this trait to your `AuthServiceProvider` and register inside the `boot` method.
+If necessary you can override the guard name and class.
 
 ```php
-use Illuminate\Support\Facades\Auth;
-use Snaccs\Auth\PersistentSessionGuard;
+use Snaccs\Auth\PersistentSession;
 
-Auth::extend('persistent_session', function ($app, $name, array $config) {
-    $provider = Auth::createUserProvider($config['provider'] ?? null);
-
-    $guard = new PersistentSessionGuard($name, $provider, $this->app['session.store']);
-
-    // When using the remember me functionality of the authentication services we
-    // will need to be set the encryption instance of the guard, which allows
-    // secure, encrypted cookie values to get generated for those cookies.
-    if (method_exists($guard, 'setCookieJar')) {
-        $guard->setCookieJar($this->app['cookie']);
+class AuthServiceProvider extends ServiceProvider
+{
+    use PersistentSession;
+    
+    public function boot()
+    {
+        $this->registerPersistentSessionGuard();
     }
-
-    if (method_exists($guard, 'setDispatcher')) {
-        $guard->setDispatcher($this->app['events']);
-    }
-
-    if (method_exists($guard, 'setRequest')) {
-        $guard->setRequest($this->app->refresh('request', $guard, 'setRequest'));
-    }
-
-    return $guard;
-});
+}
 ```
 
 Then update `config/auth.php` and set the web driver to `persistent_session`.

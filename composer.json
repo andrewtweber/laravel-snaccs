@@ -22,7 +22,9 @@
         "phpunit/phpunit": "^9"
     },
     "suggest": {
-        "ext-exif": "Needed for EXIF service"
+        "ext-exif": "Needed for EXIF service",
+        "mathiasgrimm/laravel-log-keeper": "To keep logs from taking up too much space",
+        "spatie/laravel-fractal": "To keep APIs clean"
     },
     "config": {
         "sort-packages": true
