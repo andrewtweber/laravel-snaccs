@@ -4,6 +4,15 @@
 
 Some Laravel stuff that I use in pretty much every project
 
+- [Installation](#installation)
+- [Helpers](#helpers)
+- [Casts](#casts)
+- [Validation](#validation)
+- [Models](#models)
+- [Persistent Session](#persistent-session)
+- [Fractal](#fractal)
+- [Todo](#todo)
+
 ## Installation
 
 Install this package as a dependency using [Composer](https://getcomposer.org).
@@ -163,14 +172,58 @@ class AuthServiceProvider extends ServiceProvider
 Then update `config/auth.php` and set the web driver to `persistent_session`.
 Warning: all existing users will be required to log back in.
 
+## Fractal
+
+A base transformer is available which distinguishes between null items (`null`)
+and null collections (empty array). It also simplifies relationships by handling
+null values automatically and defaulting to a `toArray` transformer if one isn't specified.
+
+```php
+use App\User;
+use Snaccs\Fractal\EloquentTransformer;
+
+class UserTransformer extends EloquentTransformer
+{
+    protected $availableIncludes = ['avatar', 'posts'];
+
+    /**
+     * You can easily include any type of Eloquent relationship.
+     * If the related object/collection is null it will handle that for you.
+     * If no transformer is passed in, it will call `toArray` on the object(s).  
+     */ 
+    public function includeAvatar(User $user)
+    {
+        return $this->hasOne($user->avatar);        
+    }
+    
+    /**
+     * If you have a transformer defined for the related model you can pass that in.
+     */
+    public function includePosts(User $user)
+    {
+        return $this->hasMany($user->posts, new PostTransformer);
+    }
+}
+```
+
 ## Todo
+
+Validation
+
+- check hashed password (parangi) 
+- Instagram/Twitter handles (TS)
+- slug (TS)
+
+Helpers
+
+- money format (TS Helpers class/Beehive)
+- dispatch with delay (Beehive)
 
 GCFA:
 
 - app/Support/Helpers class
 - Slugged model
 - isAddress trait
-- abstract transformer (nullitem, nullcollection)
 - require password change middleware
 - mail attachments / calendar invites
 - mail service maybe
@@ -185,7 +238,6 @@ TS:
 - mobile/desktop switching
 - Google structured data
 - shareable trait
-- social media validation
 - date range trait
 - Linode SDK
 - meta tag stuff
@@ -194,14 +246,11 @@ Parangi:
 
 - app/Helpers class
 - cache exif, dimensions, file sizes, etc. scripts
-- validation rules
 - exif service
 - schedulable interface (copied from gcfa)
 - hasDimensions trait
 
-Beehive:
-
-- Helpers: money format, dispatch with delay
+Beehive: nothing I think?
 
 Probably should go in separate packages:
 
