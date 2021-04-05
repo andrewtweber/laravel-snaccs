@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Casts;
+namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\PhoneNumber;
-use Tests\TestCase;
+use Snaccs\Tests\TestCase;
 
 /**
  * Class PhoneNumberTest
  *
- * @package Tests\Casts
+ * @package Snaccs\Tests\Casts
  */
 class PhoneNumberTest extends TestCase
 {

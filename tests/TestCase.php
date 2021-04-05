@@ -1,13 +1,12 @@
 <?php
 
-namespace Tests;
+namespace Snaccs\Tests;
 
 /**
  * Class TestCase
  *
- * @package Tests
+ * @package Snaccs\Tests
  */
-class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-
 }

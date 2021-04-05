@@ -40,6 +40,7 @@ parse_phone("1.555.111.2222"); // "5551112222"
 parse_domain("http://google.com"); // "google.com"
 parse_domain("http://www.google.com"); // "google.com"
 parse_domain("http://maps.google.com"); // "maps.google.com"
+parse_domain("http://www.google.com/example"); // "google.com"
 ```
 
 ## Casts
@@ -69,6 +70,37 @@ $account->phone = "1.555.111.2222"; // Stored as '5551112222'
 echo $account->phone; // Displayed as "(555) 111-2222"
 
 $account->website = "google.com"; // Stored as 'http://google.com'
+```
+
+## Validation
+
+The Website casting should be paired with the Website validation rule.
+This validates the URL but allows them to omit the scheme (defaults to http).
+It also allows you to restrict to specific domains.
+
+```php
+use Snaccs\Validation\Rules\Website;
+
+// Any URL is allowed, doesn't need `http://` at the beginning
+// Blank strings and null values also pass
+$rules = [
+    'website' => [new Website()],
+];
+
+// Same as above except blank strings and null values will fail
+$rules = [
+    'website' => ['required', new Website()],
+];
+
+// Any URL on yelp.com including subdomains is allowed
+$rules = [
+    'yelp_url' => [new Website(['yelp.com'])],
+];
+
+// Any URL on any of these domains and subdomains is allowed
+$rules = [
+    'facebook_url' => [new Website(['facebook.com', 'fb.com', 'fb.me'])],
+];
 ```
 
 ## Models
@@ -142,7 +174,6 @@ TS:
 - Google structured data
 - shareable trait
 - social media validation
-- Website validation rule
 - date range trait
 - Linode SDK
 - meta tag stuff

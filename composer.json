@@ -21,6 +21,9 @@
     "require-dev": {
         "phpunit/phpunit": "^9"
     },
+    "suggest": {
+        "ext-exif": "Needed for EXIF service"
+    },
     "config": {
         "sort-packages": true
     },
@@ -34,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Snaccs\\Tests\\": "tests/"
         }
     }
 }

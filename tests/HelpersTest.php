@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Snaccs\Tests;
 
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Snaccs\Models\Job;
@@ -9,7 +9,7 @@ use Snaccs\Models\SerializedJob;
 /**
  * Class HelpersTest
  *
- * @package Tests
+ * @package Snaccs\Tests
  */
 class HelpersTest extends TestCase
 {

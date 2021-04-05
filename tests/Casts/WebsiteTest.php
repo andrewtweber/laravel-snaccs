@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Casts;
+namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\Website;
-use Tests\TestCase;
+use Snaccs\Tests\TestCase;
 
 /**
  * Class WebsiteTest
  *
- * @package Tests\Casts
+ * @package Snaccs\Tests\Casts
  */
 class WebsiteTest extends TestCase
 {
