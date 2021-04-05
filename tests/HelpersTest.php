@@ -110,6 +110,8 @@ class HelpersTest extends TestCase
      *           ["(555)1112222",  "(555) 111-2222"]
      *           [" 15551112222 ", "(555) 111-2222"]
      *           [" 5551112222 ",  "(555) 111-2222"]
+     *           ["4930901820",    "(493) 090-1820"]
+     *           ["4915223433333", "4915223433333"]
      */
     public function format_phone(?string $number, ?string $expected)
     {

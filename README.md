@@ -58,6 +58,7 @@ class Account extends Model
 {
     protected $casts = [
         'phone' => PhoneNumber::class,
+        'phone_de' => PhoneNumber::class . ':DE',
         'website' => Website::class,
     ];
 }
