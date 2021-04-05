@@ -18,25 +18,6 @@ class WebsiteTest extends TestCase
      * @param string|null $number
      * @param string|null $expected
      *
-     * @testWith [null,                 null]
-     *           ["",                   ""]
-     *           ["example.com",        "example.com"]
-     *           ["http://",            "http://"]
-     *           ["http://example.com", "http://example.com"]
-     */
-    public function get_value(?string $number, ?string $expected)
-    {
-        $cast = new Website();
-
-        $this->assertSame($expected, $cast->get(null, null, $number, null));
-    }
-
-    /**
-     * @test
-     *
-     * @param string|null $number
-     * @param string|null $expected
-     *
      * @testWith [null,                    null]
      *           ["",                      ""]
      *           ["   ",                   ""]
@@ -54,6 +35,6 @@ class WebsiteTest extends TestCase
     {
         $cast = new Website();
 
-        $this->assertSame($expected, $cast->set(null, null, $number, null));
+        $this->assertSame($expected, $cast->set(null, "", $number, []));
     }
 }

@@ -32,6 +32,7 @@ ordinal(11); // "11th"
 
 // Phone numbers
 format_phone("5551112222"); // "(555) 111-2222"
+format_phone("4930901820", "DE"); // "+49 3090 1820"
 parse_phone("1.555.111.2222"); // "5551112222"
 
 // Parse domain (URL must be valid)
@@ -43,8 +44,8 @@ parse_domain("http://maps.google.com"); // "maps.google.com"
 
 ## Casts
 
-Format phone numbers. This will strip them down when storing in the database
-and format them nicely when displaying them.
+Phone numbers will be stripped down when storing in the database and formatted nicely when
+displaying them. Websites will be prefixed with `http://` if the URL scheme is missing.
 
 Usage:
 
@@ -84,7 +85,7 @@ serialization, date casting, etc.
 The regular Laravel session guard logs the user out of ALL sessions on every device
 (by cycling the `remember_token`) when they logout. This solves that annoyance.
 
-Add to your `AuthServiceProvider::boot` method:
+Add this to your `AuthServiceProvider::boot` method:
 
 ```php
 use Illuminate\Support\Facades\Auth;
@@ -114,8 +115,8 @@ Auth::extend('persistent_session', function ($app, $name, array $config) {
 });
 ```
 
-Then update `config/auth.php` and set the web driver to `persistent_session`
-
+Then update `config/auth.php` and set the web driver to `persistent_session`.
+Warning: all existing users will be required to log back in.
 
 ## Todo
 
@@ -137,11 +138,9 @@ TS:
 - app/Helpers class
 - abstract builder (DB transaction)
 - mobile/desktop switching
-- store in session if unauthenticated
 - Google structured data
 - shareable trait
 - social media validation
-- Website/Domain helper
 - Website validation rule
 - date range trait
 - Linode SDK
@@ -150,7 +149,6 @@ TS:
 Parangi:
 
 - app/Helpers class
-- timezone basemodel, helper class
 - cache exif, dimensions, file sizes, etc. scripts
 - validation rules
 - exif service
@@ -163,3 +161,8 @@ Probably should go in separate packages:
 
 - WordPress helpers (TS)
 - MediaWiki helpers (Parangi)
+
+Later (they don't even work in the current apps):
+
+- store in session if unauthenticated (TS)
+- timezone basemodel, helper class (Parangi)
