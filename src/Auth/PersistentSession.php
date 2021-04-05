@@ -15,12 +15,13 @@ trait PersistentSession
      * Register PersistentSessionGuard
      *
      * @param string $guardName
+     * @param string $guardClass
      */
     protected function registerPersistentSessionGuard(
         string $guardName = 'persistent_session',
         string $guardClass = PersistentSessionGuard::class
     ) {
-        Auth::extend($guardName, function ($app, $name, array $config) {
+        Auth::extend($guardName, function ($app, $name, array $config) use ($guardClass) {
             $provider = Auth::createUserProvider($config['provider'] ?? null);
 
             $guard = new $guardClass($name, $provider, $this->app['session.store']);
