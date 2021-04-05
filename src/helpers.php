@@ -1,6 +1,10 @@
 <?php
 
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
+use Snaccs\Models\Job;
 
 if (! function_exists('class_uses_deep')) {
     /**
@@ -31,6 +35,34 @@ if (! function_exists('class_uses_deep')) {
         }
 
         return array_unique($traits);
+    }
+}
+
+if (! function_exists('dispatch_with_delay')) {
+    /**
+     * Dispatch a job with a delay
+     *
+     * @param ShouldQueue|Queueable $job
+     * @param int                   $delay
+     *
+     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     */
+    function dispatch_with_delay(ShouldQueue $job, int $delay = 15)
+    {
+        if (! in_array(Queueable::class, class_uses_deep($job))) {
+            throw new InvalidArgumentException(get_class($job) . " does not use Queueable trait");
+        }
+
+        /** @var Job $last_job */
+        $last_job = Job::where('queue', $job->queue ?? 'default')
+            ->orderBy('available_at', 'desc')
+            ->first();
+
+        if ($last_job && $last_job->available_at instanceof Carbon) {
+            $job->delay($last_job->available_at->addSeconds($delay));
+        }
+
+        return dispatch($job);
     }
 }
 

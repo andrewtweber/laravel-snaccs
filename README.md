@@ -26,6 +26,15 @@ composer require andrewtweber/laravel-snaccs
 Some helper methods:
 
 ```php
+// If you dispatch too many jobs at once, e.g. emails, you can easily hit 
+// third-party API rate limits, etc. This is a quick and easy way of ensuring
+// that jobs are spaced out with a minimum delay. Each queue will have its
+// delay tracked separately.
+// Note that the job class must implement the ShouldQueue interface and use
+// the Queueable trait.
+dispatch_with_delay($job); // Defaults to 15 seconds
+dispatch_with_delay($job, 60); // 1 minute
+
 // Format bytes (precision defaults to 2)
 format_bytes(-100); // RuntimeException
 format_bytes(1); // "1"
