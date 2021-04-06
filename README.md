@@ -201,6 +201,18 @@ $rules = [
 // "instagram.com/test" fails
 ```
 
+The password verification rule simply checks if the input password matches
+the given user's current password.
+
+```php
+use Snaccs\Validation\Rules\VerifyPassword;
+
+$rules = [
+    'old_password' => ['required', new VerifyPassword(Auth::user())],
+    'password' => ['required|confirmed|string|min:10'],
+];
+```
+
 ## Models
 
 If you use the database to track jobs and failed jobs, you can use the

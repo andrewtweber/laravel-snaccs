@@ -3,7 +3,7 @@
 namespace Snaccs\Validation\Rules;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
  *
  * @package Snaccs\Validation\Rules
  */
-class VerifyPassword implements Rule
+class VerifyPassword implements ImplicitRule
 {
     /**
      * VerifyPassword constructor

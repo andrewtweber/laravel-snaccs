@@ -29,6 +29,8 @@ class VerifyPasswordTest extends LaravelTestCase
         $rule = new VerifyPassword($user);
 
         $this->assertTrue($rule->passes('password', 'testing'));
+        $this->assertFalse($rule->passes('password', ''));
+        $this->assertFalse($rule->passes('password', null));
         $this->assertFalse($rule->passes('password', 'incorrect'));
         $this->assertSame('The :attribute field is incorrect.', $rule->message());
     }
