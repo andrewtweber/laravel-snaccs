@@ -267,9 +267,9 @@ class FormattingTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,          2, null]
-     *           [0,             2, "0"]
-     *           [1,             2, "1"]
-     *           [1023,          2, "1023"]
+     *           [0,             2, "0 b"]
+     *           [1,             2, "1 b"]
+     *           [1023,          2, "1023 b"]
      *           [1024,          0, "1 kb"]
      *           [1024,          1, "1 kb"]
      *           [1024,          2, "1 kb"]
