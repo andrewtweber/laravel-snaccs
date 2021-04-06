@@ -46,6 +46,7 @@ class TwitterTest extends TestCase
      *
      * @testWith ["@"]
      *           [" "]
+     *           ["/ferretpapa"]
      *           ["illegal.chars"]
      *           ["illegal chars"]
      *           ["illegal+chars"]

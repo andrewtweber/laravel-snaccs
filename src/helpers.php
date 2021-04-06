@@ -274,6 +274,11 @@ if (! function_exists('parse_domain')) {
 
 if (! function_exists('parse_handle')) {
     /**
+     * Note: white space is trimmed, but internal white space is untouched.
+     * The `/` character is trimmed only if the provided value is a URL.
+     * The `@` character is always stripped out, all other special characters are untouched.
+     * This should be paired with the Instagram/Twitter validation rules.
+     *
      * @param string|null $url
      *
      * @return string|null

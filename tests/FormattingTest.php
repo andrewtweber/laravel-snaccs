@@ -73,6 +73,9 @@ class FormattingTest extends LaravelTestCase
      */
     public function format_money_without_currency(?int $price_in_cents, ?string $expected)
     {
+        Config::set('formatting.money.currency_prefix', '$');
+        Config::set('formatting.money.currency_suffix', '!');
+
         $this->assertSame($expected, format_money($price_in_cents, false));
     }
 

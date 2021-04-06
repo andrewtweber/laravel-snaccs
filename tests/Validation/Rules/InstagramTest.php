@@ -48,6 +48,7 @@ class InstagramTest extends TestCase
      *
      * @testWith ["@"]
      *           [" "]
+     *           ["/ferretpapa"]
      *           ["illegal chars"]
      *           ["illegal+chars"]
      *           ["toolong890123456789012345678901"]
