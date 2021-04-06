@@ -98,10 +98,11 @@ if (! function_exists('format_bytes')) {
 if (! function_exists('format_money')) {
     /**
      * @param int|null $price_in_cents
+     * @param bool     $show_currency
      *
      * @return string|null
      */
-    #[Pure] function format_money(?int $price_in_cents): ?string
+    #[Pure] function format_money(?int $price_in_cents, bool $show_currency = true): ?string
     {
         if ($price_in_cents === null) {
             return null;
@@ -122,9 +123,9 @@ if (! function_exists('format_money')) {
         // String replacements
         $replacements = [
             ($price_in_cents < 0 ? config('money.negative_prefix') : config('money.positive_prefix')),
-            config('money.currency_prefix'),
+            $show_currency ? config('money.currency_prefix') : '',
             abs($price_in_cents / $cents_per_dollar),
-            config('money.currency_suffix'),
+            $show_currency ? config('money.currency_suffix') : '',
             ($price_in_cents < 0 ? config('money.negative_suffix') : config('money.positive_suffix')),
         ];
 

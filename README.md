@@ -39,6 +39,10 @@ format_money(1); // "$0.01"
 format_money(100); // "$1.00"
 format_money(-200); // "-$2.00"
 
+// Quick option not to show currency
+format_money(1, false); // "0.01"
+format_money(-200, false); // "-2.00"
+
 // With config strings "€" currency prefix, "(" negative prefix, and ")" negative suffix
 format_money(100); // "€1.00"
 format_money(-200); // "(€2.00)"

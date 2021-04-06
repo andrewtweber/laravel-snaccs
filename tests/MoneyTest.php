@@ -66,6 +66,23 @@ class MoneyTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,   null]
+     *           [0,      "0.00"]
+     *           [1,      "0.01"]
+     *           [2000,   "20.00"]
+     *           [-100,   "-1.00"]
+     */
+    public function format_money_without_currency(?int $price_in_cents, ?string $expected)
+    {
+        $this->assertSame($expected, format_money($price_in_cents, false));
+    }
+
+    /**
+     * @test
+     *
+     * @param int|null    $price_in_cents
+     * @param string|null $expected
+     *
+     * @testWith [null,   null]
      *           [0,      "$0"]
      *           [1,      "$0.01"]
      *           [99,     "$0.99"]
