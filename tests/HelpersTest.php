@@ -11,7 +11,7 @@ use Snaccs\Models\SerializedJob;
  *
  * @package Snaccs\Tests
  */
-class HelpersTest extends LaravelTestCase
+class HelpersTest extends TestCase
 {
     /**
      * @test
@@ -88,28 +88,6 @@ class HelpersTest extends LaravelTestCase
         $this->expectExceptionMessage("Precision must be an integer >= 0");
 
         format_bytes(0, -1);
-    }
-
-    /**
-     * @test
-     *
-     * @param int|null    $price_in_cents
-     * @param string|null $expected
-     *
-     * @testWith [null,   null]
-     *           [0,      "$0.00"]
-     *           [1,      "$0.01"]
-     *           [99,     "$0.99"]
-     *           [100,    "$1.00"]
-     *           [2000,   "$20.00"]
-     *           [400000, "$4000.00"]
-     *           [-1,     "-$0.01"]
-     *           [-99,    "-$0.99"]
-     *           [-100,   "-$1.00"]
-     */
-    public function format_money(?int $price_in_cents, ?string $expected)
-    {
-        $this->assertSame($expected, format_money($price_in_cents));
     }
 
     /**

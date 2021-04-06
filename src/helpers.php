@@ -14,7 +14,7 @@ if (! function_exists('class_uses_deep')) {
      *
      * @return array
      */
-    function class_uses_deep($class, bool $autoload = true): array
+    #[Pure] function class_uses_deep($class, bool $autoload = true): array
     {
         $traits = [];
 
@@ -76,7 +76,7 @@ if (! function_exists('format_bytes')) {
      *
      * @return string|null
      */
-    function format_bytes(?int $bytes, int $precision = 2): ?string
+    #[Pure] function format_bytes(?int $bytes, int $precision = 2): ?string
     {
         assert($bytes >= 0, new \RuntimeException("Bytes must be an integer >= 0"));
         assert($precision >= 0, new \RuntimeException("Precision must be an integer >= 0"));
@@ -97,9 +97,6 @@ if (! function_exists('format_bytes')) {
 
 if (! function_exists('format_money')) {
     /**
-     * @todo option to hide cents if .00
-     * @todo more formatting flexibility, e.g. (1.00) for negative values, currency as suffix
-     *
      * @param int|null $price_in_cents
      *
      * @return string|null
@@ -110,8 +107,28 @@ if (! function_exists('format_money')) {
             return null;
         }
 
-        return ($price_in_cents < 0 ? '-' : '')
-            . sprintf(config('money.currency_prefix') . "%01.2f", abs($price_in_cents / 100));
+        // Check that the cents_per_dollar is a power of 10
+        $cents_per_dollar = config('money.cents_per_dollar');
+        $places = log($cents_per_dollar, 10);
+        assert(
+            fmod($places, 1) === 0.0 && $cents_per_dollar > 0,
+            new \RuntimeException("cents_per_dollar must be a power of 10")
+        );
+
+        // How many decimal places to show
+        $places = (config('money.show_zero_cents') || $price_in_cents % $cents_per_dollar !== 0)
+            ? (int)$places : 0;
+
+        // String replacements
+        $replacements = [
+            ($price_in_cents < 0 ? config('money.negative_prefix') : config('money.positive_prefix')),
+            config('money.currency_prefix'),
+            abs($price_in_cents / $cents_per_dollar),
+            config('money.currency_suffix'),
+            ($price_in_cents < 0 ? config('money.negative_suffix') : config('money.positive_suffix')),
+        ];
+
+        return sprintf("%s%s%01.{$places}f%s%s", ...$replacements);
     }
 }
 
@@ -124,7 +141,7 @@ if (! function_exists('format_phone')) {
      *
      * @return string|null
      */
-    function format_phone(?string $number, string $country = null): ?string
+    #[Pure] function format_phone(?string $number, string $country = null): ?string
     {
         if ($number === null) {
             return null;
@@ -237,7 +254,7 @@ if (! function_exists('parse_domain')) {
      *
      * @return string|null
      */
-    function parse_domain(?string $url): ?string
+    #[Pure] function parse_domain(?string $url): ?string
     {
         if ($url === null) {
             return null;
@@ -257,7 +274,7 @@ if (! function_exists('parse_phone')) {
      *
      * @return string|null
      */
-    function parse_phone(?string $value): ?string
+    #[Pure] function parse_phone(?string $value): ?string
     {
         if ($value === null) {
             return null;
@@ -279,7 +296,7 @@ if (! function_exists('parse_website')) {
      *
      * @return string|null
      */
-    function parse_website(?string $value): ?string
+    #[Pure] function parse_website(?string $value): ?string
     {
         if ($value === null) {
             return null;

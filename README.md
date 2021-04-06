@@ -5,6 +5,7 @@
 Some Laravel stuff that I use in pretty much every project
 
 - [Installation](#installation)
+- [Money Formatting](#money-formatting)
 - [Helpers](#helpers)
 - [Casts](#casts)
 - [Validation](#validation)
@@ -19,6 +20,32 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 
 ``` bash
 composer require andrewtweber/laravel-snaccs
+```
+
+## Money Formatting
+
+The money formatting helper uses a config file. If you want to change the config, run:
+
+```
+php artisan vendor:publish --provider="Snaccs\Providers\SnaccsServiceProvider"
+```
+
+This will publish the file `config/money.php`.
+
+```php
+// Format money with defaults
+format_money(0); // "$0.00"
+format_money(1); // "$0.01"
+format_money(100); // "$1.00"
+format_money(-200); // "-$2.00"
+
+// With config strings "€" currency prefix, "(" negative prefix, and ")" negative suffix
+format_money(100); // "€1.00"
+format_money(-200); // "(€2.00)"
+
+// If show_zero_cents is set to false
+format_money(100); // "$1"
+format_money(101); // "$1.01"
 ```
 
 ## Helpers
@@ -47,12 +74,6 @@ format_bytes(1024); // "1 kb"
 format_bytes(1793); // "1.75 kb"
 format_bytes(1793, 3); // "1.751 kb"
 format_bytes(1024*1024*1024); // "1 GB"
-
-// Format money
-format_money(0); // "$0.00"
-format_money(1); // "$0.01"
-format_money(100); // "$1.00"
-format_money(-200); // "-$2.00"
 
 // Phone numbers
 format_phone("5551112222"); // "(555) 111-2222"
@@ -231,7 +252,6 @@ Validation
 
 Helpers
 
-- money format (Beehive - doesn't show cents if == .00)
 - format phone (Beehive - has glue pieces)
 
 GCFA:
