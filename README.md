@@ -60,7 +60,7 @@ format_phone("5551112222"); // "555.111.2222"
 
 // Format bytes (precision defaults to 2)
 format_bytes(-100); // RuntimeException
-format_bytes(1); // "1"
+format_bytes(1); // "1 b"
 format_bytes(1024); // "1 kb"
 format_bytes(1793); // "1.75 kb"
 format_bytes(1793, 3); // "1.751 kb"
