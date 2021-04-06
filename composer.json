@@ -19,6 +19,7 @@
         "laravel/framework": "^8.12"
     },
     "require-dev": {
+        "orchestra/testbench": "^6.17",
         "phpunit/phpunit": "^9",
         "spatie/laravel-fractal": "^5.8"
     },
@@ -41,6 +42,13 @@
     "autoload-dev": {
         "psr-4": {
             "Snaccs\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Snaccs\\Providers\\FractalServiceProvider"
+            ]
         }
     }
 }

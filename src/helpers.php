@@ -101,18 +101,17 @@ if (! function_exists('format_money')) {
      * @todo more formatting flexibility, e.g. (1.00) for negative values, currency as suffix
      *
      * @param int|null $price_in_cents
-     * @param string   $currency
      *
      * @return string|null
      */
-    #[Pure] function format_money(?int $price_in_cents, string $currency = '$'): ?string
+    #[Pure] function format_money(?int $price_in_cents): ?string
     {
         if ($price_in_cents === null) {
             return null;
         }
 
         return ($price_in_cents < 0 ? '-' : '')
-            . sprintf($currency . "%01.2f", abs($price_in_cents / 100));
+            . sprintf(config('money.currency_prefix') . "%01.2f", abs($price_in_cents / 100));
     }
 }
 

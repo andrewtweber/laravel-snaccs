@@ -11,7 +11,7 @@ use Snaccs\Models\SerializedJob;
  *
  * @package Snaccs\Tests
  */
-class HelpersTest extends TestCase
+class HelpersTest extends LaravelTestCase
 {
     /**
      * @test
@@ -110,23 +110,6 @@ class HelpersTest extends TestCase
     public function format_money(?int $price_in_cents, ?string $expected)
     {
         $this->assertSame($expected, format_money($price_in_cents));
-    }
-
-    /**
-     * @test
-     *
-     * @param int|null    $price_in_cents
-     * @param string      $currency
-     * @param string|null $expected
-     *
-     * @testWith [null, "€", null]
-     *           [0,    "€", "€0.00"]
-     *           [99,   "€", "€0.99"]
-     *           [-100, "€", "-€1.00"]
-     */
-    public function format_money_with_currency(?int $price_in_cents, string $currency, ?string $expected)
-    {
-        $this->assertSame($expected, format_money($price_in_cents, $currency));
     }
 
     /**
