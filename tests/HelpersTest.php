@@ -107,6 +107,33 @@ class HelpersTest extends TestCase
     /**
      * @test
      *
+     * @param string|null $value
+     * @param string|null $expected
+     *
+     * @testWith [null,                               null]
+     *           ["",                                 ""]
+     *           ["_legal.",                          "_legal."]
+     *           [".legal_",                          ".legal_"]
+     *           ["_legal_",                          "_legal_"]
+     *           [".legal.",                          ".legal."]
+     *           [" ferretpapa ",                     "ferretpapa"]
+     *           ["ferretpapa",                       "ferretpapa"]
+     *           ["@ferretpapa",                      "ferretpapa"]
+     *           [" @ ferretpapa ",                   "ferretpapa"]
+     *           ["instagram.com/ferretpapa",         "ferretpapa"]
+     *           ["instagram.com/ferretpapa/",        "ferretpapa"]
+     *           ["instagram.com/@ferretpapa",        "ferretpapa"]
+     *           ["https://instagram.com/ferretpapa", "ferretpapa"]
+     *           ["twitter.com/#!ferretpapa",         "ferretpapa"]
+     */
+    public function parse_handle(?string $value, ?string $expected)
+    {
+        $this->assertSame($expected, parse_handle($value));
+    }
+
+    /**
+     * @test
+     *
      * @param string|null $number
      * @param string|null $expected
      *

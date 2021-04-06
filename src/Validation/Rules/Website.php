@@ -32,13 +32,13 @@ class Website implements Rule
      */
     public function passes($attribute, $value)
     {
-        $value = parse_website($value);
-
         // If you want an empty string or null to fail, you must also make it `required`
         // @link https://laravel.com/docs/8.x/validation#implicit-rules
         if ($value === null || $value === '') {
             return true;
         }
+
+        $value = parse_website($value);
 
         // URL invalid, immediately quit
         if (filter_var($value, FILTER_VALIDATE_URL) === false) {

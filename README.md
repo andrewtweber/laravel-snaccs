@@ -99,6 +99,11 @@ parse_domain("http://google.com"); // "google.com"
 parse_domain("http://www.google.com"); // "google.com"
 parse_domain("http://maps.google.com"); // "maps.google.com"
 parse_domain("http://www.google.com/example"); // "google.com"
+
+// Parse social media handle
+parse_handle("ferretpapa"); // "ferretpapa"
+parse_handle("@ferretpapa"); // "ferretpapa"
+parse_handle("instagram.com/ferretpapa/"); // "ferretpapa"
 ```
 
 ## Casts
@@ -213,6 +218,23 @@ $rules = [
 ];
 ```
 
+Instagram & Twitter validation rules accept valid handles (with the appropriate length
+and special character checks) with or without the `@` prefix, and also accept URLs to
+profiles. They should be used with the `parse_handle` method.
+
+```php
+use Snaccs\Validation\Rules\Instagram;
+
+$rules = [
+    'instagram' => ['nullable', new Instagram()],
+];
+// "ferretpapa" passes
+// "@ferretpapa" passes
+// "instagram.com/ferretpapa" passes
+// "illegal+chars" fails
+// "string_that_exceeds_instagram_30_char_limit" fails
+```
+
 ## Models
 
 If you use the database to track jobs and failed jobs, you can use the
@@ -286,7 +308,7 @@ class UserTransformer extends EloquentTransformer
 
 Validation
 
-- Instagram/Twitter handles (TS)
+- Username rule - alpha numeric, set lengths, reserved names (Parangi - in controller)
 - slug (TS)
 
 GCFA:
@@ -299,18 +321,15 @@ GCFA:
 - mail service maybe
 - photo processing
 - Elastic search service, elasticquententity helper, command to reindex
-- log keeper, slack webhook url
+- slack webhook url
 
 TS:
 
 - app/Helpers class
 - abstract builder (DB transaction)
 - mobile/desktop switching
-- Google structured data
-- shareable trait
 - date range trait
 - Linode SDK
-- meta tag stuff
   
 Parangi:
 
@@ -326,6 +345,10 @@ Probably should go in separate packages:
 
 - WordPress helpers (TS)
 - MediaWiki helpers (Parangi)
+- General meta/analytics stuff:
+  - shareable URLs (utm_* - TS shareable trait)
+  - Google structured data interfaces/helpers (TS)
+  - meta tag/FB og tag stuff (TS)
 
 Later (they don't even work in the current apps):
 

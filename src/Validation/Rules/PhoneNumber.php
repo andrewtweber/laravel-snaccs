@@ -31,15 +31,15 @@ class PhoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        // Strips extra characters out
-        // Also removes the `1` country code if US/CA
-        $value = parse_phone($value);
-
         // If you want an empty string or null to fail, you must also make it `required`
         // @link https://laravel.com/docs/8.x/validation#implicit-rules
         if ($value === null || $value === '') {
             return true;
         }
+
+        // Strips extra characters out
+        // Also removes the `1` country code if US/CA
+        $value = parse_phone($value);
 
         if (in_array($this->country, [null, 'CA', 'US'])) {
             return strlen($value) === 10;
