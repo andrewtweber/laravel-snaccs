@@ -81,15 +81,16 @@ if (! function_exists('format_bytes')) {
         assert($bytes >= 0, new \RuntimeException("Bytes must be an integer >= 0"));
         assert($precision >= 0, new \RuntimeException("Precision must be an integer >= 0"));
 
+        $suffixes = config('formatting.bytes');
+
         if ($bytes === null) {
             return null;
         }
         if ($bytes === 0) {
-            return '0';
+            return '0' . $suffixes[0];
         }
 
         $base = log($bytes, 1024);
-        $suffixes = ['', ' kb', ' MB', ' GB', ' TB'];
 
         return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
     }

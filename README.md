@@ -55,8 +55,20 @@ format_money(101); // "$1.01"
 format_phone("5551112222"); // "(555) 111-2222"
 format_phone("4930901820", "DE"); // "+49 3090 1820"
 
-// With config override
+// With config override US locale string set to "XXX.XXX.YYYY"
 format_phone("5551112222"); // "555.111.2222"
+
+// Format bytes (precision defaults to 2)
+format_bytes(-100); // RuntimeException
+format_bytes(1); // "1"
+format_bytes(1024); // "1 kb"
+format_bytes(1793); // "1.75 kb"
+format_bytes(1793, 3); // "1.751 kb"
+format_bytes(1024*1024*1024); // "1 GB"
+
+// With config override set to [" bytes", "k", ...]
+format_bytes(1); // "1 bytes"
+format_bytes(1024); // "1k"
 ```
 
 ## Helpers
@@ -77,14 +89,6 @@ dispatch_with_delay($job, 60); // 1 minute
 ordinal(1); // "1st"
 ordinal(2); // "2nd"
 ordinal(11); // "11th"
-
-// Format bytes (precision defaults to 2)
-format_bytes(-100); // RuntimeException
-format_bytes(1); // "1"
-format_bytes(1024); // "1 kb"
-format_bytes(1793); // "1.75 kb"
-format_bytes(1793, 3); // "1.751 kb"
-format_bytes(1024*1024*1024); // "1 GB"
 
 // Phone numbers
 parse_phone("1.555.111.2222"); // "5551112222"
@@ -141,6 +145,10 @@ use Snaccs\Validation\Rules\PhoneNumber;
 $rules = [
     'phone' => [new PhoneNumber()],
 ];
+// "1-555-111-2222" passes
+// "(800) 444-1111" passes
+// "5551112222"     passes
+// "555111222"      fails
 
 // Same as above except blank strings and null values will fail
 $rules = [
@@ -165,6 +173,8 @@ use Snaccs\Validation\Rules\Website;
 $rules = [
     'website' => [new Website()],
 ];
+// "google.com" passes
+// "http://google.com" passes
 
 // Same as above except blank strings and null values will fail
 $rules = [
@@ -175,11 +185,20 @@ $rules = [
 $rules = [
     'yelp_url' => [new Website(['yelp.com'])],
 ];
+// "yelp.com/test"     passes
+// "http://yelp.com"   passes
+// "www.yelp.com/test" passes
+// "biz.yelp.com/test" passes
+// "fakeyelp.com"      fails
 
 // Any URL on any of these domains and subdomains is allowed
 $rules = [
     'facebook_url' => [new Website(['facebook.com', 'fb.com', 'fb.me'])],
 ];
+// "facebook.com/test"  passes
+// "m.fb.com/test"      passes
+// "http://fb.me/test"  passes
+// "instagram.com/test" fails
 ```
 
 ## Models

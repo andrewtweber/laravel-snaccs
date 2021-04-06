@@ -44,4 +44,15 @@ return [
 
     ],
 
+    /**
+     * Byte formatting suffixes
+     */
+    'bytes' => [
+        '',
+        ' kb',
+        ' MB',
+        ' GB',
+        ' TB',
+    ],
+
 ];

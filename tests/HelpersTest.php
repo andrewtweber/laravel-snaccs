@@ -38,61 +38,6 @@ class HelpersTest extends TestCase
     /**
      * @test
      *
-     * @param int|null    $bytes
-     * @param int         $precision
-     * @param string|null $expected
-     *
-     * @testWith [null,          2, null]
-     *           [0,             2, "0"]
-     *           [1,             2, "1"]
-     *           [1023,          2, "1023"]
-     *           [1024,          0, "1 kb"]
-     *           [1024,          1, "1 kb"]
-     *           [1024,          2, "1 kb"]
-     *           [1536,          2, "1.5 kb"]
-     *           [1792,          2, "1.75 kb"]
-     *           [1792,          3, "1.75 kb"]
-     *           [1793,          2, "1.75 kb"]
-     *           [1793,          3, "1.751 kb"]
-     *           [2000,          1, "2 kb"]
-     *           [2000,          2, "1.95 kb"]
-     *           [2048,          2, "2 kb"]
-     *           [2150,          2, "2.1 kb"]
-     *           [2253,          2, "2.2 kb"]
-     *           [1048576,       2, "1 MB"]
-     *           [1073741824,    2, "1 GB"]
-     *           [1099511627776, 2, "1 TB"]
-     */
-    public function format_bytes(?int $bytes, int $precision, ?string $expected)
-    {
-        $this->assertSame($expected, format_bytes($bytes, $precision));
-    }
-
-    /**
-     * @test
-     */
-    public function format_bytes_bytes_failure()
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("Bytes must be an integer >= 0");
-
-        format_bytes(-1, 0);
-    }
-
-    /**
-     * @test
-     */
-    public function format_bytes_precision_failure()
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("Precision must be an integer >= 0");
-
-        format_bytes(0, -1);
-    }
-
-    /**
-     * @test
-     *
      * @param int|null    $input
      * @param string|null $expected
      *
