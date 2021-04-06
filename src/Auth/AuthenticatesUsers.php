@@ -9,27 +9,17 @@ use Illuminate\Http\Request;
  * Trait AuthenticatesUsers
  *
  * @package Snaccs\Auth
+ *
+ * Available properties
+ *   $fieldName - The name of the actual input field in the form. Defaults to "email"
+ *   $usernameColumn - The username column on the `users` table. Defaults to "username"
+ *   $emailColumn - The email column on the `users` table. Defaults to "email"
  */
 trait AuthenticatesUsers
 {
     use BaseTrait {
         login as baseLogin;
     }
-
-    /**
-     * @var string The name of the actual input field in the form.
-     */
-    protected string $fieldName = 'email';
-
-    /**
-     * @var string The username column on the `users` table.
-     */
-    protected string $usernameColumn = 'username';
-
-    /**
-     * @var string The email column on the `users` table.
-     */
-    protected string $emailColumn = 'email';
 
     /**
      * @var string The selected column (set automatically) based on the input value.
@@ -43,14 +33,18 @@ trait AuthenticatesUsers
      */
     public function login(Request $request)
     {
+        $fieldName = property_exists($this, 'fieldName') ? $this->fieldName : 'email';
+        $emailColumn = property_exists($this, 'emailColumn') ? $this->emailColumn : 'email';
+        $usernameColumn = property_exists($this, 'usernameColumn') ? $this->usernameColumn : 'username';
+
         // If the input field's value is an email address, use the email column
         // otherwise use the username column.
-        $this->username = filter_var($request->get($this->fieldName), FILTER_VALIDATE_EMAIL)
-            ? $this->emailColumn
-            : $this->usernameColumn;
+        $this->username = filter_var($request->get($fieldName), FILTER_VALIDATE_EMAIL)
+            ? $emailColumn
+            : $usernameColumn;
 
         $request->merge([
-            $this->username => $request->get($this->fieldName),
+            $this->username => $request->get($fieldName),
         ]);
 
         return $this->baseLogin($request);
