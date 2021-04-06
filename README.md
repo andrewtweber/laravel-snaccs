@@ -12,6 +12,7 @@ Some Laravel stuff that I use in pretty much every project
 - [Validation](#validation)
 - [Models](#models)
 - [Fractal](#fractal)
+- [Mail](#mail)
 - [Todo](#todo)
 
 ## Installation
@@ -310,6 +311,36 @@ class UserTransformer extends EloquentTransformer
         return $this->hasMany($user->posts, new PostTransformer);
     }
 }
+```
+
+## Mail
+
+The `Attachment` and `Invite` classes make it easier to send calendar invites through email.
+All you have to do is implement the `Schedulable` interface on your event class(es), and
+then send an Invite attachment.
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Snaccs\Mail\Invite;
+use Snaccs\Mail\Schedulable;
+
+class Event extends Model implements Schedulable {
+    public function uid(): string {
+        return (string)$this->id;
+    }
+    
+    public function title(): string {
+        return $this->title;
+    }
+    
+    public function date(): Carbon {
+        return $this->start_at;
+    }
+}
+
+$event = Event::first();
+$invite = new Invite($event, "recipient@example.com");
+Mail::send(Mailable::class)->attach($invite);
 ```
 
 ## Todo
