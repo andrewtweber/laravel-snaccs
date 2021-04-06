@@ -12,7 +12,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 class PhoneNumber implements CastsAttributes
 {
     /**
-     * PhoneNumber constructor
+     * PhoneNumber constructor.
      *
      * @param string|null $country
      */

@@ -12,7 +12,7 @@ use Illuminate\Contracts\Validation\Rule;
 class PhoneNumber implements Rule
 {
     /**
-     * PhoneNumber constructor
+     * PhoneNumber constructor.
      *
      * @param string|null $country
      */

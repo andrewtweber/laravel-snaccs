@@ -274,13 +274,8 @@ class UserTransformer extends EloquentTransformer
 
 Validation
 
-- check hashed password (parangi) 
 - Instagram/Twitter handles (TS)
 - slug (TS)
-
-Helpers
-
-- format phone (Beehive - has glue pieces)
 
 GCFA:
 
@@ -326,3 +321,5 @@ Later (they don't even work in the current apps):
 - timezone basemodel, helper class (Parangi)
 
 MONEY CAST
+custom thousands/decimal separators for money
+zero value options for money/bytes

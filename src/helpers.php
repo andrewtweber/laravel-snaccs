@@ -4,7 +4,6 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\Pure;
 use Snaccs\Models\Job;
 
 if (! function_exists('class_uses_deep')) {
@@ -14,7 +13,7 @@ if (! function_exists('class_uses_deep')) {
      *
      * @return array
      */
-    #[Pure] function class_uses_deep($class, bool $autoload = true): array
+    function class_uses_deep($class, bool $autoload = true): array
     {
         $traits = [];
 
@@ -76,7 +75,7 @@ if (! function_exists('format_bytes')) {
      *
      * @return string|null
      */
-    #[Pure] function format_bytes(?int $bytes, int $precision = 2): ?string
+    function format_bytes(?int $bytes, int $precision = 2): ?string
     {
         assert($bytes >= 0, new \RuntimeException("Bytes must be an integer >= 0"));
         assert($precision >= 0, new \RuntimeException("Precision must be an integer >= 0"));
@@ -103,7 +102,7 @@ if (! function_exists('format_money')) {
      *
      * @return string|null
      */
-    #[Pure] function format_money(?int $price_in_cents, bool $show_currency = true): ?string
+    function format_money(?int $price_in_cents, bool $show_currency = true): ?string
     {
         if ($price_in_cents === null) {
             return null;
@@ -145,7 +144,7 @@ if (! function_exists('format_phone')) {
      *
      * @return string|null
      */
-    #[Pure] function format_phone(?string $number, string $country = null): ?string
+    function format_phone(?string $number, string $country = null): ?string
     {
         if ($number === null) {
             return null;
@@ -227,7 +226,7 @@ if (! function_exists('ordinal')) {
      *
      * @return string|null
      */
-    #[Pure] function ordinal(?int $number): ?string
+    function ordinal(?int $number): ?string
     {
         if ($number === null) {
             return null;
@@ -258,7 +257,7 @@ if (! function_exists('parse_domain')) {
      *
      * @return string|null
      */
-    #[Pure] function parse_domain(?string $url): ?string
+    function parse_domain(?string $url): ?string
     {
         if ($url === null) {
             return null;
@@ -278,7 +277,7 @@ if (! function_exists('parse_phone')) {
      *
      * @return string|null
      */
-    #[Pure] function parse_phone(?string $value): ?string
+    function parse_phone(?string $value): ?string
     {
         if ($value === null) {
             return null;
@@ -300,7 +299,7 @@ if (! function_exists('parse_website')) {
      *
      * @return string|null
      */
-    #[Pure] function parse_website(?string $value): ?string
+    function parse_website(?string $value): ?string
     {
         if ($value === null) {
             return null;

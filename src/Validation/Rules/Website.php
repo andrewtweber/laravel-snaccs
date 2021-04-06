@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class Website implements Rule
 {
     /**
-     * Website constructor
+     * Website constructor.
      *
      * @param array $allowedDomains
      */

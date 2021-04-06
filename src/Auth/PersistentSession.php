@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 trait PersistentSession
 {
     /**
-     * Register PersistentSessionGuard
+     * Register PersistentSessionGuard.
      *
      * @param string $guardName
      * @param string $guardClass
