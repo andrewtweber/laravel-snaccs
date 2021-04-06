@@ -5,12 +5,12 @@
 Some Laravel stuff that I use in pretty much every project
 
 - [Installation](#installation)
+- [Auth](#auth)
 - [Formatting](#formatting)
 - [Helpers](#helpers)
 - [Casts](#casts)
 - [Validation](#validation)
 - [Models](#models)
-- [Persistent Session](#persistent-session)
 - [Fractal](#fractal)
 - [Todo](#todo)
 
@@ -22,8 +22,6 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require andrewtweber/laravel-snaccs
 ```
 
-## Formatting
-
 The formatting helpers use a config file. If you want to change the config, run:
 
 ```
@@ -31,6 +29,41 @@ php artisan vendor:publish --provider="Snaccs\Providers\SnaccsServiceProvider"
 ```
 
 This will publish the file `config/formatting.php`.
+
+## Auth
+
+### Login Credentials
+
+If you'd like your user to be able to login with either their email address or username,
+use the `Snaccs\Auth\AuthenticatesUsers` trait on your `LoginController` instead of the
+Laravel trait.
+
+### Persistent Session
+
+The regular Laravel session guard logs the user out of ALL sessions on every device
+(by cycling the `remember_token`) when they logout. This solves that annoyance.
+
+Add this trait to your `AuthServiceProvider` and register inside the `boot` method.
+If necessary you can override the guard name and class.
+
+```php
+use Snaccs\Auth\PersistentSession;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    use PersistentSession;
+    
+    public function boot()
+    {
+        $this->registerPersistentSessionGuard();
+    }
+}
+```
+
+Then update `config/auth.php` and set the web driver to `persistent_session`.
+Warning: all existing users will be required to log back in.
+
+## Formatting
 
 ```php
 // Format money with defaults
@@ -244,31 +277,6 @@ queued or `FailedJob::count()` to see if any have failed.
 
 The implementation is up to you, but these models help simplify some of the 
 serialization, date casting, etc.
-
-## Persistent Session
-
-The regular Laravel session guard logs the user out of ALL sessions on every device
-(by cycling the `remember_token`) when they logout. This solves that annoyance.
-
-Add this trait to your `AuthServiceProvider` and register inside the `boot` method.
-If necessary you can override the guard name and class.
-
-```php
-use Snaccs\Auth\PersistentSession;
-
-class AuthServiceProvider extends ServiceProvider
-{
-    use PersistentSession;
-    
-    public function boot()
-    {
-        $this->registerPersistentSessionGuard();
-    }
-}
-```
-
-Then update `config/auth.php` and set the web driver to `persistent_session`.
-Warning: all existing users will be required to log back in.
 
 ## Fractal
 
