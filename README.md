@@ -5,7 +5,7 @@
 Some Laravel stuff that I use in pretty much every project
 
 - [Installation](#installation)
-- [Money Formatting](#money-formatting)
+- [Formatting](#formatting)
 - [Helpers](#helpers)
 - [Casts](#casts)
 - [Validation](#validation)
@@ -22,15 +22,15 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require andrewtweber/laravel-snaccs
 ```
 
-## Money Formatting
+## Formatting
 
-The money formatting helper uses a config file. If you want to change the config, run:
+The formatting helpers use a config file. If you want to change the config, run:
 
 ```
 php artisan vendor:publish --provider="Snaccs\Providers\SnaccsServiceProvider"
 ```
 
-This will publish the file `config/money.php`.
+This will publish the file `config/formatting.php`.
 
 ```php
 // Format money with defaults
@@ -50,6 +50,13 @@ format_money(-200); // "(€2.00)"
 // If show_zero_cents is set to false
 format_money(100); // "$1"
 format_money(101); // "$1.01"
+
+// Format phone with defaults
+format_phone("5551112222"); // "(555) 111-2222"
+format_phone("4930901820", "DE"); // "+49 3090 1820"
+
+// With config override
+format_phone("5551112222"); // "555.111.2222"
 ```
 
 ## Helpers
@@ -80,8 +87,6 @@ format_bytes(1793, 3); // "1.751 kb"
 format_bytes(1024*1024*1024); // "1 GB"
 
 // Phone numbers
-format_phone("5551112222"); // "(555) 111-2222"
-format_phone("4930901820", "DE"); // "+49 3090 1820"
 parse_phone("1.555.111.2222"); // "5551112222"
 
 // Parse domain (URL must be valid)
@@ -300,3 +305,5 @@ Later (they don't even work in the current apps):
 
 - store in session if unauthenticated (TS)
 - timezone basemodel, helper class (Parangi)
+
+MONEY CAST

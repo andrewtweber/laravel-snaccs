@@ -19,7 +19,7 @@ class MoneyTest extends LaravelTestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("cents_per_dollar must be a power of 10");
 
-        Config::set('money.cents_per_dollar', 8);
+        Config::set('formatting.money.cents_per_dollar', 8);
 
         format_money(100);
     }
@@ -32,7 +32,7 @@ class MoneyTest extends LaravelTestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("cents_per_dollar must be a power of 10");
 
-        Config::set('money.cents_per_dollar', 20);
+        Config::set('formatting.money.cents_per_dollar', 20);
 
         format_money(100);
     }
@@ -65,11 +65,11 @@ class MoneyTest extends LaravelTestCase
      * @param int|null    $price_in_cents
      * @param string|null $expected
      *
-     * @testWith [null,   null]
-     *           [0,      "0.00"]
-     *           [1,      "0.01"]
-     *           [2000,   "20.00"]
-     *           [-100,   "-1.00"]
+     * @testWith [null, null]
+     *           [0,    "0.00"]
+     *           [1,    "0.01"]
+     *           [2000, "20.00"]
+     *           [-100, "-1.00"]
      */
     public function format_money_without_currency(?int $price_in_cents, ?string $expected)
     {
@@ -95,7 +95,7 @@ class MoneyTest extends LaravelTestCase
      */
     public function format_money_with_options(?int $price_in_cents, ?string $expected)
     {
-        Config::set('money.show_zero_cents', false);
+        Config::set('formatting.money.show_zero_cents', false);
 
         $this->assertSame($expected, format_money($price_in_cents));
     }
@@ -119,8 +119,8 @@ class MoneyTest extends LaravelTestCase
      */
     public function format_money_as_yen(?int $price_in_cents, ?string $expected)
     {
-        Config::set('money.currency_prefix', '¥');
-        Config::set('money.cents_per_dollar', 1000);
+        Config::set('formatting.money.currency_prefix', '¥');
+        Config::set('formatting.money.cents_per_dollar', 1000);
 
         $this->assertSame($expected, format_money($price_in_cents));
     }
@@ -144,9 +144,9 @@ class MoneyTest extends LaravelTestCase
      */
     public function format_money_as_yen_with_options(?int $price_in_cents, ?string $expected)
     {
-        Config::set('money.currency_prefix', '¥');
-        Config::set('money.cents_per_dollar', 1000);
-        Config::set('money.show_zero_cents', false);
+        Config::set('formatting.money.currency_prefix', '¥');
+        Config::set('formatting.money.cents_per_dollar', 1000);
+        Config::set('formatting.money.show_zero_cents', false);
 
         $this->assertSame($expected, format_money($price_in_cents));
     }
@@ -170,12 +170,12 @@ class MoneyTest extends LaravelTestCase
      */
     public function format_money_with_config_strings(?int $price_in_cents, ?string $expected)
     {
-        Config::set('money.currency_prefix', '€');
-        Config::set('money.currency_suffix', '_');
-        Config::set('money.positive_prefix', '+');
-        Config::set('money.positive_suffix', '!');
-        Config::set('money.negative_prefix', '(');
-        Config::set('money.negative_suffix', ')');
+        Config::set('formatting.money.currency_prefix', '€');
+        Config::set('formatting.money.currency_suffix', '_');
+        Config::set('formatting.money.positive_prefix', '+');
+        Config::set('formatting.money.positive_suffix', '!');
+        Config::set('formatting.money.negative_prefix', '(');
+        Config::set('formatting.money.negative_suffix', ')');
 
         $this->assertSame($expected, format_money($price_in_cents));
     }

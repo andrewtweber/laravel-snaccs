@@ -109,7 +109,7 @@ if (! function_exists('format_money')) {
         }
 
         // Check that the cents_per_dollar is a power of 10
-        $cents_per_dollar = config('money.cents_per_dollar');
+        $cents_per_dollar = config('formatting.money.cents_per_dollar');
         $places = log($cents_per_dollar, 10);
         assert(
             fmod($places, 1) === 0.0 && $cents_per_dollar > 0,
@@ -117,16 +117,16 @@ if (! function_exists('format_money')) {
         );
 
         // How many decimal places to show
-        $places = (config('money.show_zero_cents') || $price_in_cents % $cents_per_dollar !== 0)
+        $places = (config('formatting.money.show_zero_cents') || $price_in_cents % $cents_per_dollar !== 0)
             ? (int)$places : 0;
 
         // String replacements
         $replacements = [
-            ($price_in_cents < 0 ? config('money.negative_prefix') : config('money.positive_prefix')),
-            $show_currency ? config('money.currency_prefix') : '',
+            ($price_in_cents < 0 ? config('formatting.money.negative_prefix') : config('formatting.money.positive_prefix')),
+            $show_currency ? config('formatting.money.currency_prefix') : '',
             abs($price_in_cents / $cents_per_dollar),
-            $show_currency ? config('money.currency_suffix') : '',
-            ($price_in_cents < 0 ? config('money.negative_suffix') : config('money.positive_suffix')),
+            $show_currency ? config('formatting.money.currency_suffix') : '',
+            ($price_in_cents < 0 ? config('formatting.money.negative_suffix') : config('formatting.money.positive_suffix')),
         ];
 
         return sprintf("%s%s%01.{$places}f%s%s", ...$replacements);
@@ -136,6 +136,8 @@ if (! function_exists('format_money')) {
 if (! function_exists('format_phone')) {
     /**
      * Display a phone number nicely
+     *
+     * @todo if it's an alphabetical phone number, don't break it into pieces
      *
      * @param string|null $number
      * @param string|null $country
@@ -179,15 +181,15 @@ if (! function_exists('format_phone')) {
                     $number = implode('', $parts);
                 }
 
-                $format = '(XXX) XXX-YYYY';
+                $format = config('formatting.phone.locales.US');
                 break;
 
             case 'DE':
-                $format = '+XX XXXX YYYYY';
+                $format = config('formatting.phone.locales.DE');
                 break;
 
             case 'PL':
-                $format = '+XX XX XXX XX YY';
+                $format = config('formatting.phone.locales.PL');
                 break;
         }
 
@@ -208,7 +210,7 @@ if (! function_exists('format_phone')) {
             }
 
             if ($extension) {
-                $formatted .= ' ext ' . $extension;
+                $formatted .= config('formatting.phone.extension_separator') . $extension;
             }
 
             return $formatted;

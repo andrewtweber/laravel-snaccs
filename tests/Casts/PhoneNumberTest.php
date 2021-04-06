@@ -3,14 +3,14 @@
 namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\PhoneNumber;
-use Snaccs\Tests\TestCase;
+use Snaccs\Tests\LaravelTestCase;
 
 /**
  * Class PhoneNumberTest
  *
  * @package Snaccs\Tests\Casts
  */
-class PhoneNumberTest extends TestCase
+class PhoneNumberTest extends LaravelTestCase
 {
     /**
      * @test
