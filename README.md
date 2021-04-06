@@ -35,6 +35,11 @@ Some helper methods:
 dispatch_with_delay($job); // Defaults to 15 seconds
 dispatch_with_delay($job, 60); // 1 minute
 
+// Ordinal
+ordinal(1); // "1st"
+ordinal(2); // "2nd"
+ordinal(11); // "11th"
+
 // Format bytes (precision defaults to 2)
 format_bytes(-100); // RuntimeException
 format_bytes(1); // "1"
@@ -43,10 +48,11 @@ format_bytes(1793); // "1.75 kb"
 format_bytes(1793, 3); // "1.751 kb"
 format_bytes(1024*1024*1024); // "1 GB"
 
-// Ordinal
-ordinal(1); // "1st"
-ordinal(2); // "2nd"
-ordinal(11); // "11th"
+// Format money
+format_money(0); // "$0.00"
+format_money(1); // "$0.01"
+format_money(100); // "$1.00"
+format_money(-200); // "-$2.00"
 
 // Phone numbers
 format_phone("5551112222"); // "(555) 111-2222"
@@ -225,8 +231,8 @@ Validation
 
 Helpers
 
-- money format (TS Helpers class/Beehive)
-- dispatch with delay (Beehive)
+- money format (Beehive - doesn't show cents if == .00)
+- format phone (Beehive - has glue pieces)
 
 GCFA:
 

@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\Pure;
 use Snaccs\Models\Job;
 
 if (! function_exists('class_uses_deep')) {
@@ -91,6 +92,27 @@ if (! function_exists('format_bytes')) {
         $suffixes = ['', ' kb', ' MB', ' GB', ' TB'];
 
         return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
+    }
+}
+
+if (! function_exists('format_money')) {
+    /**
+     * @todo option to hide cents if .00
+     * @todo more formatting flexibility, e.g. (1.00) for negative values, currency as suffix
+     *
+     * @param int|null $price_in_cents
+     * @param string   $currency
+     *
+     * @return string|null
+     */
+    #[Pure] function format_money(?int $price_in_cents, string $currency = '$'): ?string
+    {
+        if ($price_in_cents === null) {
+            return null;
+        }
+
+        return ($price_in_cents < 0 ? '-' : '')
+            . sprintf($currency . "%01.2f", abs($price_in_cents / 100));
     }
 }
 
@@ -185,7 +207,7 @@ if (! function_exists('ordinal')) {
      *
      * @return string|null
      */
-    function ordinal(?int $number): ?string
+    #[Pure] function ordinal(?int $number): ?string
     {
         if ($number === null) {
             return null;
