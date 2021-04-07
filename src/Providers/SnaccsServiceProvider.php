@@ -18,14 +18,20 @@ class SnaccsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $source = realpath(__DIR__.'/../../config/formatting.php');
+        $formatting = realpath(__DIR__.'/../../config/formatting.php');
+        $system = realpath(__DIR__.'/../../config/system.php');
 
         if ($this->app instanceof LaravelApplication) {
-            $this->publishes([$source => config_path('formatting.php')]);
+            $this->publishes([
+                $formatting => config_path('formatting.php'),
+                $system => config_path('system.php'),
+            ]);
         } elseif ($this->app instanceof LumenApplication) {
             $this->app->configure('formatting');
+            $this->app->configure('system');
         }
 
-        $this->mergeConfigFrom($source, 'formatting');
+        $this->mergeConfigFrom($formatting, 'formatting');
+        $this->mergeConfigFrom($system, 'system');
     }
 }

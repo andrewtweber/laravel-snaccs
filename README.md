@@ -240,6 +240,30 @@ $rules = [
 // "instagram.com/test" fails
 ```
 
+Username validation allows you to easily control username min/max lengths,
+reserved words (e.g. "admin"), special characters, uniqueness, and more. 
+See `config/system.php` for all of your options.
+
+```php
+use Snaccs\Validation\Rules\Username;
+
+$rules = [
+    'username' => ['required', new Username()],
+];
+// "test"   passes
+// "_test_" passes
+// "test,"  fails because commas are not allowed by default
+// "admin"  fails because it is reserved
+// "inuse"  fails if a user already has that username
+
+// You can also pass a user object to the constructor. This is the equivalent of
+// Rule::unique('users')->ignore($user->id)
+$rules = [
+    'username' => ['required', new Username(Auth::user())],
+];
+// "inuse" will pass if it's the Auth user's username
+```
+
 The password verification rule simply checks if the input password matches
 the given user's current password.
 
@@ -325,17 +349,7 @@ use Snaccs\Mail\Invite;
 use Snaccs\Mail\Schedulable;
 
 class Event extends Model implements Schedulable {
-    public function uid(): string {
-        return (string)$this->id;
-    }
-    
-    public function title(): string {
-        return $this->title;
-    }
-    
-    public function date(): Carbon {
-        return $this->start_at;
-    }
+    // ...truncated...
 }
 
 $event = Event::first();
@@ -345,9 +359,10 @@ Mail::send(Mailable::class)->attach($invite);
 
 ## Todo
 
+- assets config
+
 Validation
 
-- Username rule - alpha numeric, set lengths, reserved names (Parangi - in controller)
 - slug (TS)
 
 GCFA:
@@ -356,8 +371,7 @@ GCFA:
 - Slugged model
 - isAddress trait
 - require password change middleware
-- mail attachments / calendar invites
-- mail service maybe
+- gmail service
 - photo processing
 - Elastic search service, elasticquententity helper, command to reindex
 - slack webhook url
@@ -383,7 +397,7 @@ Beehive: nothing I think?
 Probably should go in separate packages:
 
 - WordPress helpers (TS)
-- MediaWiki helpers (Parangi)
+- MediaWiki helpers + wiki config (Parangi)
 - General meta/analytics stuff:
   - shareable URLs (utm_* - TS shareable trait)
   - Google structured data interfaces/helpers (TS)

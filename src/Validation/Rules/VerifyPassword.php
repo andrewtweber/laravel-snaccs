@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 class VerifyPassword implements ImplicitRule
 {
     /**
-     * VerifyPassword constructor
+     * VerifyPassword constructor.
      *
      * @param Authenticatable $user
      */
