@@ -88,12 +88,12 @@ class Username implements Rule
             return false;
         }
 
-        // Escape special characters for regex.
-        $chars = preg_quote($config['allowed_special_chars']);
+        $chars = $config['allowed_special_chars'];
 
+        // Escape special characters for regex.
         // Forward slash is not a special regular expression character,
         // but we're using it as the delimiter so we need to escape it too.
-        $escaped_chars = str_replace("/", "\/", $chars);
+        $escaped_chars = str_replace("/", "\/", preg_quote($chars));
 
         // Check that it's alphanumeric + allowed special characters.
         if (preg_replace("/[^a-zA-Z0-9{$escaped_chars}]/", '', $value) !== $value) {

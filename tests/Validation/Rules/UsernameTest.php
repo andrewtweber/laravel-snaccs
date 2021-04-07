@@ -79,24 +79,26 @@ class UsernameTest extends LaravelTestCase
      * @test
      *
      * @param string|null $username
+     * @param string      $message
      *
-     * @testWith ["a"]
-     *           ["__"]
-     *           ["_._"]
-     *           [" test "]
-     *           ["te,st"]
-     *           ["te st"]
-     *           ["admin"]
-     *           ["café"]
-     *           ["toolong8901234567890123456"]
+     * @testWith ["a",      "The username must be 2 or more characters."]
+     *           ["__",     "The username cannot be special characters only."]
+     *           ["_._",    "The username cannot be special characters only."]
+     *           [" test ", "The username must consist of letters, numbers, and -_. only."]
+     *           ["te,st",  "The username must consist of letters, numbers, and -_. only."]
+     *           ["te st",  "The username must consist of letters, numbers, and -_. only."]
+     *           ["admin",  "That username is not allowed."]
+     *           ["café",   "The username must consist of letters, numbers, and -_. only."]
+     *           ["toolong8901234567890123456", "The username must be 25 or fewer characters."]
      */
-    public function fails(?string $username)
+    public function fails(?string $username, string $message)
     {
         Config::set('system.usernames.min', 2);
 
         $rule = new Username();
 
         $this->assertFalse($rule->passes('username', $username));
+        $this->assertSame($message, $rule->message());
     }
 
     /**
@@ -127,11 +129,5 @@ class UsernameTest extends LaravelTestCase
         $rule = new Username();
 
         $this->assertSame($expected, $rule->passes('username', $username));
-    }
-
-    /**
-     */
-    public function message()
-    {
     }
 }
