@@ -23,13 +23,14 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require andrewtweber/laravel-snaccs
 ```
 
-The formatting helpers use a config file. If you want to change the config, run:
+The formatting helpers and username validation rule use config files.
+If you want to change the config, run:
 
 ```
 php artisan vendor:publish --provider="Snaccs\Providers\SnaccsServiceProvider"
 ```
 
-This will publish the file `config/formatting.php`.
+This will publish the files `config/formatting.php` and `config/system.php`.
 
 ## Auth
 
@@ -361,14 +362,9 @@ Mail::send(Mailable::class)->attach($invite);
 
 - assets config
 
-Validation
-
-- slug (TS)
-
 GCFA:
 
 - app/Support/Helpers class
-- Slugged model
 - isAddress trait
 - require password change middleware
 - gmail service
@@ -396,6 +392,7 @@ Beehive: nothing I think?
 
 Probably should go in separate packages:
 
+- Slugged model (slimak - but make it more reusable, add slug validation rule from TS)
 - WordPress helpers (TS)
 - MediaWiki helpers + wiki config (Parangi)
 - General meta/analytics stuff:
