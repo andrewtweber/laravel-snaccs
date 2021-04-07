@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
  */
 class Username implements Rule
 {
+    private string $message = 'The :attribute field is not a valid username.';
+
     /**
      * Username constructor.
      *
@@ -50,7 +52,7 @@ class Username implements Rule
 
         // Check for uniqueness
         if ($config['table']) {
-            $exists = DB::table($config['table'])->newQuery();
+            $exists = DB::table($config['table']);
 
             // Ignore the given user, if applicable
             if ($this->user && $this->user instanceof Model) {
@@ -58,22 +60,31 @@ class Username implements Rule
 
                 $exists->where($key, '!=', $this->user->$key);
             }
-            $exists->where($attribute, '=', $value)->first();
+
+            $exists = $exists->where($attribute, '=', $value)->first();
 
             if ($exists) {
+                $this->message = "That username is already in use.";
+
                 return false;
             }
         }
 
         // Length requirements.
         if (strlen($value) < $config['min']) {
+            $this->message = "The username must be {$config['min']} or more characters.";
+
             return false;
         } else if (strlen($value) > $config['max']) {
+            $this->message = "The username must be {$config['max']} or fewer characters.";
+
             return false;
         }
 
         // Reserved usernames.
         if (in_array($value, $config['reserved'])) {
+            $this->message = "That username is not allowed.";
+
             return false;
         }
 
@@ -82,20 +93,26 @@ class Username implements Rule
 
         // Forward slash is not a special regular expression character,
         // but we're using it as the delimiter so we need to escape it too.
-        $chars = str_replace("/", "\/", $chars);
+        $escaped_chars = str_replace("/", "\/", $chars);
 
         // Check that it's alphanumeric + allowed special characters.
-        if (preg_replace("/[^a-zA-Z0-9{$chars}]/", '', $value) !== $value) {
+        if (preg_replace("/[^a-zA-Z0-9{$escaped_chars}]/", '', $value) !== $value) {
+            $this->message = "The username must consist of letters, numbers, and {$chars} only.";
+
             return false;
         }
 
         // Check if it's numbers only.
         if (! $config['allow_numbers_only'] && preg_match('/^([0-9])+$/', $value) === 1) {
+            $this->message = "The username cannot be numbers only.";
+
             return false;
         }
 
         // Check if it's special characters only.
-        if (! $config['allow_special_chars_only'] && preg_match("/^([{$chars}])+$/", $value) === 1) {
+        if (! $config['allow_special_chars_only'] && preg_match("/^([{$escaped_chars}])+$/", $value) === 1) {
+            $this->message = "The username cannot be special characters only.";
+
             return false;
         }
 
@@ -109,6 +126,6 @@ class Username implements Rule
      */
     public function message()
     {
-        return 'The :attribute field is not a valid username.';
+        return $this->message;
     }
 }
