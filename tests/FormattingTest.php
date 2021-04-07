@@ -323,7 +323,7 @@ class FormattingTest extends LaravelTestCase
      */
     public function format_bytes_bytes_failure()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Bytes must be an integer >= 0");
 
         format_bytes(-1, 0);
@@ -334,7 +334,7 @@ class FormattingTest extends LaravelTestCase
      */
     public function format_bytes_precision_failure()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Precision must be an integer >= 0");
 
         format_bytes(0, -1);

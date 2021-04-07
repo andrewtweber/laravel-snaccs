@@ -2,6 +2,7 @@
 
 namespace Snaccs\Mail;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
@@ -11,16 +12,63 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 class Invite extends Attachment implements Arrayable
 {
+    public array $reminders = [];
+
     /**
      * Invite constructor.
      *
      * @param Schedulable $event
      * @param string      $recipient
+     * @param Carbon|null $now
      */
     public function __construct(
         public Schedulable $event,
-        public string $recipient
+        public string $recipient,
+        public ?Carbon $now = null
     ) {
+    }
+
+    /**
+     * @param int $minutes
+     *
+     * @return $this
+     */
+    public function addReminder(int $minutes)
+    {
+        assert($minutes > 0, new \InvalidArgumentException("Reminder interval must be > 0"));
+
+        $trigger = "-PT{$minutes}M";
+        if ($minutes % 1440 === 0) {
+            $days = $minutes / 1440;
+            $trigger = "-P{$days}D";
+        } else if ($minutes % 60 === 0) {
+            $hours = $minutes / 60;
+            $trigger = "-PT{$hours}H";
+        }
+
+        $this->reminders[] = $trigger;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function alerts(): string
+    {
+        $alerts = "";
+
+        foreach ($this->reminders as $trigger) {
+            $alerts .= <<<ALERT
+                \nBEGIN:VALARM
+                TRIGGER:{$trigger}
+                ACTION:DISPLAY
+                DESCRIPTION:Reminder
+                END:VALARM
+                ALERT;
+        }
+
+        return $alerts;
     }
 
     /**
@@ -54,7 +102,7 @@ class Invite extends Attachment implements Arrayable
         $data = $this->toArray();
 
         $name = config('app.name');
-        $now = date('Ymd') . 'T' . date('His');
+        $now = ($this->now ?? Carbon::now())->format('Ymd\THis');
 
         return <<<VCAL
         BEGIN:VCALENDAR
@@ -71,12 +119,7 @@ class Invite extends Attachment implements Arrayable
         DTEND:{$data['end']}
         LOCATION:{$data['location']}
         SUMMARY:{$data['title']}
-        DESCRIPTION:{$data['title']}
-        BEGIN:VALARM
-        TRIGGER:-PT60M
-        ACTION:DISPLAY
-        DESCRIPTION:Reminder
-        END:VALARM
+        DESCRIPTION:{$data['title']}{$this->alerts()}
         END:VEVENT
         END:VCALENDAR
         VCAL;

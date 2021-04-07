@@ -78,8 +78,8 @@ if (! function_exists('format_bytes')) {
      */
     #[Pure] function format_bytes(?int $bytes, int $precision = 2): ?string
     {
-        assert($bytes >= 0, new \RuntimeException("Bytes must be an integer >= 0"));
-        assert($precision >= 0, new \RuntimeException("Precision must be an integer >= 0"));
+        assert($bytes >= 0, new \InvalidArgumentException("Bytes must be an integer >= 0"));
+        assert($precision >= 0, new \InvalidArgumentException("Precision must be an integer >= 0"));
 
         $suffixes = config('formatting.bytes');
 
