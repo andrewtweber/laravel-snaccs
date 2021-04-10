@@ -2,6 +2,9 @@
 
 return [
 
+    // Easily disable registration
+    'registration_enabled' => true,
+
     /**
      * Username requirements
      */

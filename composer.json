@@ -27,7 +27,8 @@
     "suggest": {
         "ext-exif": "Needed for EXIF service",
         "mathiasgrimm/laravel-log-keeper": "To keep logs from taking up too much space",
-        "spatie/laravel-fractal": "To keep APIs clean"
+        "spatie/laravel-fractal": "To keep APIs clean",
+        "vimeo/psalm": "For code sanity"
     },
     "config": {
         "sort-packages": true

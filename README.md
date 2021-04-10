@@ -65,6 +65,33 @@ class AuthServiceProvider extends ServiceProvider
 Then update `config/auth.php` and set the web driver to `persistent_session`.
 Warning: all existing users will be required to log back in.
 
+### Disabling Registration
+
+You can easily disable registration by setting `system.registration_enabled` to false.
+
+Then enable the middleware on your `RegisterController`:
+
+```php
+class RegisterController extends Controller
+{
+    use RegistersUsers;
+
+    public function __construct()
+    {
+        $this->middleware([
+            \Snaccs\Http\Middleware\RegistrationEnabled::class,
+            'guest',
+        ]);
+    }
+}
+```
+
+You will probably want to add some manual `@if` statements to your blade files
+to hide the registration links when it's disabled.
+
+If the registration page is accessed while it is disabled, an exception will be
+thrown which will show the 403 error page. This exception is not logged by the `ErrorHandler`.
+
 ## Formatting
 
 ```php
@@ -360,21 +387,23 @@ Mail::send(Mailable::class)->attach($invite);
 
 ## Todo
 
-- assets config
+- assets config and views
+- instead of relying on a manual script (gitcheck/laravel), have a console command
+  that runs regularly and pushes to Slack if debug mode is enabled, etc.
 
 GCFA:
 
 - app/Support/Helpers class
-- isAddress trait
+- isAddress trait - address normalization and helper accessors
 - require password change middleware
-- gmail service
+- gmail service, MailMessage
 - photo processing
 - Elastic search service, elasticquententity helper, command to reindex
-- slack webhook url
+- debug warning view & Appserviceprovider
 
 TS:
 
-- app/Helpers class
+- app/Helpers class - get remote image size esp.
 - abstract builder (DB transaction)
 - mobile/desktop switching
 - date range trait
@@ -385,14 +414,15 @@ Parangi:
 - app/Helpers class
 - cache exif, dimensions, file sizes, etc. scripts
 - exif service
-- schedulable interface (copied from gcfa)
 - hasDimensions trait
 
 Beehive: nothing I think?
+GuessTheCar / ATW / FerretLove
 
-Probably should go in separate packages:
+### Separate Packages
 
 - Slugged model (slimak - but make it more reusable, add slug validation rule from TS)
+  - also a HashedID model - see WD Routeserviceprovider
 - WordPress helpers (TS)
 - MediaWiki helpers + wiki config (Parangi)
 - General meta/analytics stuff:
