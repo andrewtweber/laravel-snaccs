@@ -22,13 +22,16 @@
         "laravel/ui": "^3.2",
         "orchestra/testbench": "^6.17",
         "phpunit/phpunit": "^9",
-        "spatie/laravel-fractal": "^5.8"
+        "spatie/laravel-fractal": "^5.8",
+        "vinkla/hashids": "^9.1"
     },
     "suggest": {
         "ext-exif": "Needed for EXIF service",
+        "laravel/ui": "For Laravel UI scaffolding",
         "mathiasgrimm/laravel-log-keeper": "To keep logs from taking up too much space",
         "spatie/laravel-fractal": "To keep APIs clean",
-        "vimeo/psalm": "For code sanity"
+        "vimeo/psalm": "For code sanity",
+        "vinkla/hashids": "For hashing IDs"
     },
     "config": {
         "sort-packages": true

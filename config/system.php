@@ -3,7 +3,7 @@
 return [
 
     // Easily disable registration
-    'registration_enabled' => true,
+    'registration_enabled' => env('REGISTRATION_ENABLED', true),
 
     /**
      * Username requirements
