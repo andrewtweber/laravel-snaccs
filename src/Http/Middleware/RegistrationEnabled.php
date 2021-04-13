@@ -6,6 +6,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Snaccs\Exceptions\RegistrationDisabledException;
 
+/**
+ * Class RegistrationEnabled
+ *
+ * @package Snaccs\Http\Middleware
+ */
 class RegistrationEnabled
 {
     /**

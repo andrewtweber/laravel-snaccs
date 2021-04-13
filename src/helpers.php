@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Snaccs\Models\Job;
+use Snaccs\Services\System;
 
 if (! function_exists('class_uses_deep')) {
     /**
@@ -218,6 +219,16 @@ if (! function_exists('format_phone')) {
         }
 
         return $number;
+    }
+}
+
+if (! function_exists('is_mobile')) {
+    /**
+     * @return bool
+     */
+    #[Pure] function is_mobile(): bool
+    {
+        return app(System::class)->is_mobile;
     }
 }
 

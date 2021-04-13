@@ -11,8 +11,10 @@ Some Laravel stuff that I use in pretty much every project
 - [Casts](#casts)
 - [Validation](#validation)
 - [Models](#models)
+- [Hashids](#hashids)
 - [Fractal](#fractal)
 - [Mail](#mail)
+- [Misc](#misc)
 - [Todo](#todo)
 
 ## Installation
@@ -331,6 +333,41 @@ queued or `FailedJob::count()` to see if any have failed.
 The implementation is up to you, but these models help simplify some of the 
 serialization, date casting, etc.
 
+## Hashids
+
+If your model has a hashed ID (to make URL guessing more difficult, etc.)
+you can simply use the `HashedID` trait:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Snaccs\Hashids\HashedID;
+
+class Account extends Model
+{
+    use HashedID;
+    
+    // Optionally specify the connection if different from default
+    public static $hashids_connection = 'custom';
+}
+```
+
+This automatically resolves routes for you. It also adds an accessor for a
+`display_id` attribute. And it adds some helper methods: `findByDisplayId`
+and `findByDisplayIdOrFail`. 
+
+So you can define your routes and controllers like this, and the models
+will automatically be resolved using the hashed ID instead of the integer ID.
+
+```php
+Route::get('accounts/{account}', [AccountController::class, 'show']);
+
+class AccountController extends Controller {
+    public function show(Account $account) {
+        return view('accounts.show')->with('account', $account);
+    }
+}
+```
+
 ## Fractal
 
 A base transformer is available which distinguishes between null items (`null`)
@@ -385,6 +422,55 @@ $invite = new Invite($event, "recipient@example.com");
 Mail::send(Mailable::class)->attach($invite);
 ```
 
+## Misc
+
+Of course, responsive design is ideal, but in some cases your mobile site really does
+need to look or behave differently. This package makes it easy to switch between mobile
+and desktop for debugging purposes.
+
+First add the middleware to your http Kernel. It needs to go after the AddQueuedCookiesToResponse
+middleware, but otherwise the order doesn't really matter.
+
+```php
+class Kernel extends HttpKernel {
+    protected $middlewareGroups = [
+        'web' => [
+            //...
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Snaccs\Http\Middleware\ForceMobileOrDesktop::class,
+            Middleware\VerifyCsrfToken::class,
+            //...
+        ],
+    ];
+}
+```
+
+Next register the System singleton. In your `AppServiceProvider` `boot` method:
+
+```php
+use Snaccs\Services\System;
+
+class AppServiceProvider extends ServiceProvider {
+    public function boot() {
+        $this->app->instance(System::class, new System());
+    }
+}
+```
+
+Now you can easily check if you're on mobile or desktop using the `is_mobile()` helper.
+This value is cached on the singleton so that you're not running the same logic over and over.
+Finally, you might want to add some quick links to toggle. For example in a blade file:
+
+```blade
+<footer>
+    @if (is_mobile())
+        <a href="?desktop">Desktop</a>
+    @else
+        <a href="?mobile">Mobile</a>
+    @endif
+</footer>
+```
+
 ## Todo
 
 - assets config and views
@@ -399,13 +485,14 @@ GCFA:
 - gmail service, MailMessage
 - photo processing
 - Elastic search service, elasticquententity helper, command to reindex
+  - make it more flexible to add new filters, sorts, etc.
+  - merge with TS
 - debug warning view & Appserviceprovider
 
 TS:
 
 - app/Helpers class - get remote image size esp.
 - abstract builder (DB transaction)
-- mobile/desktop switching
 - date range trait
 - Linode SDK
   
@@ -422,7 +509,6 @@ GuessTheCar / ATW / FerretLove
 ### Separate Packages
 
 - Slugged model (slimak - but make it more reusable, add slug validation rule from TS)
-  - also a HashedID model - see WD Routeserviceprovider
 - WordPress helpers (TS)
 - MediaWiki helpers + wiki config (Parangi)
 - General meta/analytics stuff:
