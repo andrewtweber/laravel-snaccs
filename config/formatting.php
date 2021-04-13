@@ -48,7 +48,7 @@ return [
      * Byte formatting suffixes
      */
     'bytes' => [
-        ' b',
+        ' bytes',
         ' kb',
         ' MB',
         ' GB',

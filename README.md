@@ -333,6 +333,27 @@ queued or `FailedJob::count()` to see if any have failed.
 The implementation is up to you, but these models help simplify some of the 
 serialization, date casting, etc.
 
+### Builders
+
+The `AbstractBuilder` class is helpful for moving model creating/updating
+logic outside of the controller and into a testable class. It also wraps the
+functionality inside of a database transaction, which is especially useful if
+you create related models and need to revert all of them upon failure.
+
+```php
+class AccountController extends Controller
+{
+    public function create(AccountRequest $request)
+    {
+        $account = (new AccountBuilder($request->all())
+            ->setUser($request->user())
+            ->save();
+            
+        return response()->json($account);
+    } 
+}
+```
+
 ## Hashids
 
 If your model has a hashed ID (to make URL guessing more difficult, etc.)
@@ -492,7 +513,6 @@ GCFA:
 TS:
 
 - app/Helpers class - get remote image size esp.
-- abstract builder (DB transaction)
 - date range trait
 - Linode SDK
   
