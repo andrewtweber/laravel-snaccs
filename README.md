@@ -345,12 +345,12 @@ class AccountController extends Controller
 {
     public function create(AccountRequest $request)
     {
-        $account = (new AccountBuilder($request->all())
+        $account = (new AccountBuilder($request->all()))
             ->setUser($request->user())
             ->save();
             
         return response()->json($account);
-    } 
+    }
 }
 ```
 

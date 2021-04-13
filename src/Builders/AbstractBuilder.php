@@ -25,6 +25,13 @@ abstract class AbstractBuilder
     protected bool $opened_transaction = false;
 
     /**
+     * Automatically index models after creating/updating.
+     *
+     * @var bool
+     */
+    protected bool $index = true;
+
+    /**
      * AbstractBuilder constructor.
      *
      * @param array $data
@@ -61,6 +68,28 @@ abstract class AbstractBuilder
     }
 
     /**
+     * Call this in the constructor if this builder should never index.
+     *
+     * @return $this
+     */
+    public function disableIndexing(): static
+    {
+        $this->index = false;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableIndexing(): static
+    {
+        $this->index = true;
+
+        return $this;
+    }
+
+    /**
      * This should use the $data array to create and save the model.
      *
      * @return Model
@@ -91,7 +120,9 @@ abstract class AbstractBuilder
             // Load any database column defaults, etc.
             $entity = $entity->fresh();
 
-            if ($entity instanceof ElasticquentInterface) {
+            // Note: if the elasticquent package is not installed (i.e. interface
+            // does not exist), this will just be skipped without throwing an error.
+            if ($this->index && $entity instanceof ElasticquentInterface) {
                 $entity->addToIndex();
             }
         } catch (Throwable $e) {
