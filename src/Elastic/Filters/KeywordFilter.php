@@ -4,12 +4,16 @@ namespace Snaccs\Elastic\Filters;
 
 class KeywordFilter extends AbstractFilter
 {
+    public function __construct(
+        public string $keyword
+    ) {
+    }
+
+    /**
+     * @return array
+     */
     public function toArray()
     {
-        if (! $keyword) {
-            return;
-        }
-
         /**
          * Filters are always required (AND logic)
          * If there is a query string, I'm also adding a "should" query (OR logic)
@@ -37,9 +41,9 @@ class KeywordFilter extends AbstractFilter
          * "Cent Rink" will not match (only 1 keyword matches)
          * "Wilmette" will match city ngram
          */
-        $keyword_query = [
+        return [
             'multi_match' => [
-                'query'     => $keyword,
+                'query'     => $this->keyword,
                 'fields'    => [
                     'searchable^3',
                 ],
@@ -47,8 +51,6 @@ class KeywordFilter extends AbstractFilter
                 'fuzziness' => 1,
             ],
         ];
-
-        $this->queries['should'][] = $keyword_query;
 
         $this->min_score = 1;
     }

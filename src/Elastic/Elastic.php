@@ -8,6 +8,10 @@ use Carbon\Carbon;
 use Elasticquent\ElasticquentResultCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Snaccs\Elastic\Sorts\BasicSort;
+use Snaccs\Elastic\Sorts\DistanceSort;
+use Snaccs\Elastic\Sorts\RandomSort;
+use Snaccs\Elastic\Types\Coords;
 
 /**
  * Class Elastic
@@ -758,70 +762,20 @@ class Elastic
                 $sorts[] = $this->secondary_sort;
             }
         } elseif ($sort === 'past_and_ongoing') {
-            // Upcoming tournaments in ascending order,
-            // Then ongoing and past tournaments in descending order
-            // Or just change it to ? 1 : 0 and add 'start_date' => 'asc' if you want all in ascending order
-            $sorts = [
-                '_script' => [
-                    'type'   => 'number',
-                    'script' => [
-                        'lang'   => 'painless',
-                        'source' => "return doc['start_date'].value.millis > params.now ? Long.MAX_VALUE - doc['start_date'].value.millis : -1 * (params.now - doc['start_date'].value.millis)",
-                        'params' => [
-                            'now' => Carbon::now('UTC')->endOfDay()->valueOf(),
-                        ],
-                    ],
-                    'order'  => 'desc',
-                ],
-            ];
+            // PastAndOngoingSort
+
         } elseif ($sort === 'past') {
-            // Ongoing and upcoming clinics in ascending order,
-            // Then past tournaments in descending order
-            // Or just change it to ? 1 : 0 and add 'start_date' => 'asc' if you want all in ascending order
-            $sorts = [
-                '_script' => [
-                    'type'   => 'number',
-                    'script' => [
-                        'lang'   => 'painless',
-                        'source' => "return doc['end_date'].value.millis >= params.now ? Long.MAX_VALUE - doc['start_date'].value.millis : -1 * (params.now - doc['start_date'].value.millis)",
-                        'params' => [
-                            'now' => Carbon::now('UTC')->startOfDay()->valueOf(),
-                        ],
-                    ],
-                    'order'  => 'desc',
-                ],
-            ];
+            // PastSort
+
         } elseif ($sort === 'random') {
-            $sorts = [
-                '_script' => [
-                    'type'   => 'number',
-                    'script' => [
-                        'lang'   => 'painless',
-                        'source' => "return (doc['_id'].value + params.salt).hashCode()",
-                        'params' => [
-                            'salt' => Str::random(16), // todo allow passing in salt
-                        ],
-                    ],
-                    'order'  => 'asc',
-                ],
-            ];
+            $sorts = (new RandomSort())->toArray();
         }
 
         // If searching by "near me", we want the closest first
         if ($this->latitude && $this->longitude) {
-            $coords = rtrim(number_format($this->latitude, 6), '0') . ',' .
-                rtrim(number_format($this->longitude, 6), '0');
+            $coords = new Coords($this->latitude, $this->longitude);
 
-            $sorts = [
-                '_geo_distance' => [
-                    'coords'          => $coords,
-                    'order'           => 'asc',
-                    'unit'            => 'mi',
-                    'mode'            => 'min',
-                    'distance_type'   => 'arc', // 'plane' is less accurate but faster
-                    'ignore_unmapped' => true,
-                ],
-            ];
+            $sorts = (new DistanceSort($coords))->toArray();
         }
 
         if ($this->default_sort === 'created_at') {
@@ -835,11 +789,7 @@ class Elastic
                     ],
                 ];
             } else {
-                $sorts = [
-                    'created_at' => [
-                        'order' => 'desc',
-                    ],
-                ];
+                $sorts = (new BasicSort('created_at', 'desc'))->toArray();
             }
         }
 
