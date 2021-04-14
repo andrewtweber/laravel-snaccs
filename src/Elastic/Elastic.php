@@ -8,7 +8,9 @@ use Carbon\Carbon;
 use Elasticquent\ElasticquentResultCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Snaccs\Elastic\Filters\BasicFilter;
 use Snaccs\Elastic\Sorts\BasicSort;
+use Snaccs\Elastic\Sorts\BestMatch;
 use Snaccs\Elastic\Sorts\DistanceSort;
 use Snaccs\Elastic\Sorts\RandomSort;
 use Snaccs\Elastic\Types\Coords;
@@ -78,11 +80,6 @@ class Elastic
     protected $secondary_sort = null;
 
     /**
-     * @var bool
-     */
-    protected $has_any_date_filter = false;
-
-    /**
      * @var int
      */
     protected $min_score = 0;
@@ -112,12 +109,11 @@ class Elastic
      * TODO: allow multiple e.g. last_name, first_name for coaches
      * name, city for rinks
      *
-     * @param string $default_sort
-     * @param string $secondary_sort
+     * @param array $default_sorts
      *
      * @return $this
      */
-    public function defaultSort($default_sort, $secondary_sort = null)
+    public function defaultSort(array $default_sorts)
     {
         if (! $this->sort) {
             $this->sort = $default_sort;
@@ -133,7 +129,7 @@ class Elastic
      */
     protected function applyBasicFilter($key, $value)
     {
-        $filter = (new ElasticFilter($key, $value));
+        $filter = (new BasicFilter($key, $value));
 
         // TODO: make this more flexible
         if ($key === 'tags') {
@@ -146,151 +142,6 @@ class Elastic
 
         if ($result !== null) {
             $this->queries['filter'][] = $result;
-        }
-    }
-
-    /**
-     * The value will be the Monday at the start of that week
-     * We want the range from that Monday to that Sunday
-     *
-     * @param string[] $dates
-     */
-    protected function applyDateRangeFilter($dates)
-    {
-        $this->has_any_date_filter = true;
-
-        $start = Carbon::parse($dates['start']);
-        $end = Carbon::parse($dates['end']);
-    }
-
-    /**
-     * @param string|null $keyword
-     *
-     * @return $this
-     */
-    public function keyword($keyword)
-    {
-        if ($keyword) {
-            $this->filters['keyword'] = $keyword;
-            $this->allowed_filters[] = 'keyword';
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function build()
-    {
-        /** @var Indexable $model */
-        $model = new $this->class_name;
-
-        $this->queries = [
-            'filter' => [],
-        ];
-
-        foreach ($this->filters as $key => $value) {
-            if (! in_array($key, $this->allowed_filters)) {
-                continue;
-            }
-            if ($value === null || $value === '') {
-                continue;
-            }
-
-            $method = Str::camel("apply_{$key}_filter");
-
-            $this->$method($value);
-        }
-
-        $sorts = [];
-        if (isset($this->filters['keyword'])) {
-            $sorts[] = '_score';
-        } elseif ($this->sort !== 'best_match') {
-            $sorts[$this->sort] = [
-                'order' => $this->order,
-            ];
-        } else {
-            // Ugh, why
-            $sorts[$this->default_sort] = [
-                'order' => Str::endsWith($this->default_sort, '_at') ? 'desc' : 'asc',
-            ];
-        }
-
-        if ($this->secondary_sort) {
-            $sorts[$this->secondary_sort] = [
-                'order' => 'desc',
-            ];
-        }
-
-        $params = [
-            'index' => $model->getIndexName(),
-            'type'  => 'entity',
-            'body'  => [
-                'query'     => [
-                    'bool' => $this->queries,
-                ],
-                'sort'      => $sorts,
-                'from'      => $this->offset,
-                'size'      => $this->per_page,
-                'min_score' => $this->min_score,
-            ],
-        ];
-
-        if ($this->aggregate_by) {
-            $params['body']['collapse'] = [
-                'field' => $this->aggregate_by,
-            ];
-        }
-
-        if ($this->highlight) {
-            $params['body']['highlight'] = $this->highlight;
-        }
-
-        return $params;
-    }
-
-    /**
-     * @return ElasticquentResultCollection
-     */
-    public function query(&$params = null)
-    {
-        $params = $this->build();
-
-        //dd($params);
-
-        return $this->class_name::complexSearch($params);
-    }
-
-    /**
-     * @var float
-     */
-    protected $latitude;
-
-    /**
-     * @var float
-     */
-    protected $longitude;
-
-    /**
-     * @var float
-     */
-    protected $radius;
-
-    /**
-     * Elastic constructor
-     *
-     * @param string  $class_name
-     * @param Request $request
-     * @param int     $per_page
-     */
-    public function __construct($class_name, Request $request = null, $per_page = 32)
-    {
-        $this->class_name = $class_name;
-        $this->per_page = $per_page;
-
-        if ($request) {
-            $this->setConfigFromRequest($request);
         }
     }
 
@@ -334,273 +185,6 @@ class Elastic
     }
 
     /**
-     * @param int $value
-     */
-    protected function applyBasicFilter($key, $value)
-    {
-        $this->queries['filter'][] = [
-            'match' => [
-                $key => $value,
-            ],
-        ];
-    }
-
-    /**
-     * The value will be the Monday at the start of that week
-     * We want the range from that Monday to that Sunday
-     *
-     * @param string $dates
-     */
-    protected function applyDatesFilter($dates)
-    {
-        if ($this->class_name !== Tournament::class) {
-            throw new InvalidArgumentException();
-        }
-
-        $this->has_any_date_filter = true;
-
-        $dates = Carbon::parse($dates);
-
-        $date_key = $this->class_name === Ice::class ? 'date' : 'start_date';
-
-        $this->queries['filter'][] = [
-            'range' => [
-                $date_key => [
-                    'gte' => $dates->toDateString(),
-                    'lte' => $dates->copy()->endOfWeek()->toDateString(),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * The value will be the Monday at the start of that week
-     * We want the range from that Monday to that Sunday
-     *
-     * @param string[] $dates
-     */
-    protected function applyDateTimeRangeFilter($dates)
-    {
-        $this->has_any_date_filter = true;
-
-        $start = Carbon::parse($dates['start']);
-        $end = Carbon::parse($dates['end']);
-    }
-
-    /**
-     * @param string $keyword
-     */
-    protected function applyKeywordFilter($keyword)
-    {
-        if (! $keyword) {
-            return;
-        }
-
-        /**
-         * Filters are always required (AND logic)
-         * If there is a query string, I'm also adding a "should" query (OR logic)
-         *
-         * filter(s) AND (name OR city match)
-         */
-        $this->queries['should'] = [];
-
-        /**
-         * ALL keywords must match
-         * The best match gets added to the score
-         *
-         * Example:
-         * Centennial Ice Arena, Wilmette IL
-         *
-         * "Cent" will match name ngram
-         * "Arena" will match name ngram
-         * "Cent Ice" will match name ngram (both keywords match)
-         * "Cent Rink" will not match (only 1 keyword matches)
-         * "Wilmette" will match city ngram
-         */
-        $keyword_query = [
-            'multi_match' => [
-                'query'     => $keyword,
-                'fields'    => [
-                    'searchable^3',
-                ],
-                'operator'  => 'and',
-                'fuzziness' => 1,
-            ],
-        ];
-
-        if (in_array($this->class_name, [Clinic::class, Tournament::class])) {
-            //$keyword_query['multi_match']['fields'][] = 'rink_name';
-
-            $this->highlight = [
-                'pre_tags'  => [
-                    '<em>',
-                ],
-                'post_tags' => [
-                    '</em>',
-                ],
-                'fields'    => [
-                    'rink_name' => [
-                        'require_field_match' => false,
-                    ],
-                ],
-            ];
-        }
-
-        $this->queries['should'][] = $keyword_query;
-
-        $this->min_score = 1;
-    }
-
-    /**
-     * @param Carbon $start_date
-     * @param string $key
-     */
-    protected function applyStartDateFilter(Carbon $start_date, $key = 'from')
-    {
-        $this->has_any_date_filter = true;
-
-        $date_key = $this->class_name === Ice::class ? 'date' : 'start_date';
-
-        $this->queries['filter'][] = [
-            'range' => [
-                $date_key => [
-                    $key => $start_date->toDateString(),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @param Carbon $end_date
-     */
-    protected function applyEndDateFilter(Carbon $end_date, $key = 'from')
-    {
-        $this->has_any_date_filter = true;
-
-        $date_key = $this->class_name === Ice::class ? 'date' : 'end_date';
-
-        $this->queries['filter'][] = [
-            'range' => [
-                $date_key => [
-                    $key => $end_date->toDateString(),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Any result that starts on or before today
-     *
-     * @param $discard
-     */
-    protected function applyPastFilter($discard)
-    {
-        if ($this->has_any_date_filter) {
-            return;
-        }
-
-        $this->applyEndDateFilter(Carbon::now()->startOfDay(), 'to');
-        $this->sort = 'past';
-    }
-
-    /**
-     * Any result that starts after today
-     * e.g. upcoming tournaments that start tomorrow
-     *
-     * @param $discard
-     */
-    protected function applyUpcomingFilter($discard)
-    {
-        if ($this->has_any_date_filter) {
-            return;
-        }
-
-        $this->applyStartDateFilter(Carbon::now()->startOfDay()->addDay());
-    }
-
-    /**
-     * Any result that ends on today or after
-     * e.g. clinics that are currently active and ending today or later
-     *
-     * @param $discard
-     */
-    protected function applyActiveFilter($discard)
-    {
-        if ($this->has_any_date_filter) {
-            return;
-        }
-
-        $this->applyEndDateFilter(Carbon::now()->startOfDay());
-    }
-
-    /**
-     * @param bool $include_past
-     *
-     * @return $this
-     */
-    public function pastOnly()
-    {
-        $this->filters['past'] = true;
-        $this->allowed_filters[] = 'past';
-
-        return $this;
-    }
-
-    /**
-     * @param bool $include_past
-     *
-     * @return $this
-     */
-    public function withPast($include_past)
-    {
-        if ($include_past) {
-            $this->sort = 'past';
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param bool $include_past
-     *
-     * @return $this
-     */
-    public function withPastAndOngoing($include_past)
-    {
-        if ($include_past) {
-            $this->sort = 'past_and_ongoing';
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function defaultToUpcoming()
-    {
-        if ($this->sort !== 'past_and_ongoing') {
-            $this->filters['upcoming'] = true;
-            $this->allowed_filters[] = 'upcoming';
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function defaultToUpcomingIncludingToday()
-    {
-        if ($this->sort !== 'past') {
-            $this->filters['active'] = true;
-            $this->allowed_filters[] = 'active';
-        }
-
-        return $this;
-    }
-
-    /**
      * @param Request $request
      */
     protected function setConfigFromRequest(Request $request)
@@ -618,30 +202,6 @@ class Elastic
         if ($request->filled('order')) {
             $this->order = $request->get('order');
         }
-
-        $this->latitude = $request->get('latitude');
-        $this->longitude = $request->get('longitude');
-
-        if ($request->filled('radius')) {
-            $this->radius = $request->get('radius');
-
-            $this->filters['radius'] = $this->radius;
-            $this->allowed_filters[] = 'radius';
-        }
-    }
-
-    /**
-     * @param int $offset
-     * @param int $per_page
-     *
-     * @return $this
-     */
-    public function overrideConfig($offset, $per_page)
-    {
-        $this->offset = $offset;
-        $this->per_page = $per_page;
-
-        return $this;
     }
 
     /**
@@ -668,18 +228,6 @@ class Elastic
             'filter' => [],
         ];
 
-        if ($model instanceof SingleSportInterface || $model instanceof MultipleSportsInterface) {
-            // For now, rink & shop cover every sport
-            if (! $model instanceof Rink && ! $model instanceof Shop) {
-                $sport = sport();
-
-                if ($sport) {
-                    $this->filters['sports'] = $sport->id;
-                    $this->allowed_filters[] = 'sports';
-                }
-            }
-        }
-
         foreach ($this->filters as $key => $value) {
             if (! in_array($key, $this->allowed_filters)) {
                 continue;
@@ -693,104 +241,32 @@ class Elastic
             $this->$method($value);
         }
 
-        // Default: best match, then name ascending
+        // TODO: date filters should be limited to 1
+        // TODO: rating, created_at should default order to descending
+        // TODO: if KeywordFilter overrides all other filters, should also force BestMatch sorting
+
         $sorts = [
-            $this->default_sort,
+            'best_match' => new BestMatch(),
+            'random'     => new RandomSort(),
+            'distance'   => new DistanceSort(new Coords($this->latitude, $this->longitude)),
+            //'past_and_ongoing' => new PastAndOngoingSort(),
+            //'past' => new PastSort(),
         ];
-        if ($this->secondary_sort) {
-            $sorts[] = $this->secondary_sort;
+
+        $final = [];
+        if (! isset($sorts[$sort])) {
+            $final[] = new BasicSort($sort, $order);
+        }
+        if ($sort !== $this->default_sort) {
+            $final[] = new BasicSort($this->default_sort);
+        }
+        if ($sort !== $this->secondary_sort) {
+            $final[] = new BasicSort($this->secondary_sort);
         }
 
-        $name_key = $this->default_sort === 'last_name' ? 'last_name' : 'name';
-
-        $sort = $this->sort;
-        if ($sort === 'name') {
-            $sorts = [
-                $name_key,
-            ];
-            if ($this->secondary_sort) {
-                $sorts[] = $this->secondary_sort;
-            }
-        } elseif ($sort === 'name.desc') {
-            $sorts = [
-                $name_key => [
-                    'order' => 'desc',
-                ],
-            ];
-            if ($this->secondary_sort) {
-                $sorts[$this->secondary_sort] = [
-                    'order' => 'desc',
-                ];
-            }
-        } elseif ($sort === 'best_match') {
-            $sorts = [
-                '_score',
-                $this->default_sort,
-            ];
-            if ($this->secondary_sort) {
-                $sorts[] = $this->secondary_sort;
-            }
-        } elseif ($sort === 'rating') {
-            $sorts = [
-                'rating'            => [
-                    'order' => 'desc',
-                ],
-                $this->default_sort => [
-                    'order' => 'asc',
-                ],
-            ];
-            if ($this->secondary_sort) {
-                $sorts[$this->secondary_sort] = [
-                    'order' => 'asc',
-                ];
-            }
-        } elseif ($sort === 'rating.asc') {
-            $sorts = [
-                'rating',
-                $this->default_sort,
-            ];
-            if ($this->secondary_sort) {
-                $sorts[] = $this->secondary_sort;
-            }
-        } elseif ($sort === 'start_date') {
-            $date_key = $this->class_name === Ice::class ? 'date' : 'end_date';
-
-            $sorts = [
-                $date_key,
-            ];
-            if ($this->secondary_sort) {
-                $sorts[] = $this->secondary_sort;
-            }
-        } elseif ($sort === 'past_and_ongoing') {
-            // PastAndOngoingSort
-
-        } elseif ($sort === 'past') {
-            // PastSort
-
-        } elseif ($sort === 'random') {
-            $sorts = (new RandomSort())->toArray();
-        }
-
-        // If searching by "near me", we want the closest first
-        if ($this->latitude && $this->longitude) {
-            $coords = new Coords($this->latitude, $this->longitude);
-
-            $sorts = (new DistanceSort($coords))->toArray();
-        }
-
-        if ($this->default_sort === 'created_at') {
-            if ($sort === 'best_match') {
-                $sorts = [
-                    '_score'     => [
-                        'order' => 'desc',
-                    ],
-                    'created_at' => [
-                        'order' => 'desc',
-                    ],
-                ];
-            } else {
-                $sorts = (new BasicSort('created_at', 'desc'))->toArray();
-            }
+        $sorts = [];
+        foreach ($final as $sort) {
+            $sorts = array_merge($sorts, $sort->toArray());
         }
 
         $params = [
@@ -819,13 +295,15 @@ class Elastic
 
         return $params;
     }
-
+    
     /**
      * @return ElasticquentResultCollection
      */
-    public function query()
+    public function query(&$params = null)
     {
         $params = $this->build();
+
+        //dd($params);
 
         return $this->class_name::complexSearch($params);
     }

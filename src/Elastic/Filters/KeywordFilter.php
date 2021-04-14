@@ -52,6 +52,24 @@ class KeywordFilter extends AbstractFilter
             ],
         ];
 
+        if (in_array($this->class_name, [Clinic::class, Tournament::class])) {
+            //$keyword_query['multi_match']['fields'][] = 'rink_name';
+
+            $this->highlight = [
+                'pre_tags'  => [
+                    '<em>',
+                ],
+                'post_tags' => [
+                    '</em>',
+                ],
+                'fields'    => [
+                    'rink_name' => [
+                        'require_field_match' => false,
+                    ],
+                ],
+            ];
+        }
+
         $this->min_score = 1;
     }
 }
