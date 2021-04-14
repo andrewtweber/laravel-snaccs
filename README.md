@@ -507,7 +507,7 @@ GCFA:
 - photo processing
 - Elastic search service, elasticquententity helper, command to reindex
   - make it more flexible to add new filters, sorts, etc.
-  - merge with TS
+  - merge with TS. TS has some tests too
 - debug warning view & Appserviceprovider
 
 TS:

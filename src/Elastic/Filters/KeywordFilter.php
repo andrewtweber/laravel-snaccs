@@ -1,0 +1,55 @@
+<?php
+
+namespace Snaccs\Elastic\Filters;
+
+class KeywordFilter extends AbstractFilter
+{
+    public function toArray()
+    {
+        if (! $keyword) {
+            return;
+        }
+
+        /**
+         * Filters are always required (AND logic)
+         * If there is a query string, I'm also adding a "should" query (OR logic)
+         *
+         * filter(s) AND (name OR city match)
+         */
+        //$this->queries['should'] = [];
+
+        /**
+         * RESET ALL OTHER FILTERS
+         * If searching by a keyword, filters are ignored
+         */
+        $this->queries['filter'] = [];
+
+        /**
+         * ALL keywords must match
+         * The best match gets added to the score
+         *
+         * Example:
+         * Centennial Ice Arena, Wilmette IL
+         *
+         * "Cent" will match name ngram
+         * "Arena" will match name ngram
+         * "Cent Ice" will match name ngram (both keywords match)
+         * "Cent Rink" will not match (only 1 keyword matches)
+         * "Wilmette" will match city ngram
+         */
+        $keyword_query = [
+            'multi_match' => [
+                'query'     => $keyword,
+                'fields'    => [
+                    'searchable^3',
+                ],
+                'operator'  => 'and',
+                'fuzziness' => 1,
+            ],
+        ];
+
+        $this->queries['should'][] = $keyword_query;
+
+        $this->min_score = 1;
+    }
+}
