@@ -25,7 +25,7 @@ class BasicFilter extends AbstractFilter
      */
     public function __construct(
         public string $field,
-        public $value
+        public mixed $value
     ) {
         $this->matching = static::MATCH_ANY;
 
@@ -43,7 +43,23 @@ class BasicFilter extends AbstractFilter
     }
 
     /**
-     * Match all
+     * Match with variable.
+     *
+     * @param string $matching
+     *
+     * @return $this
+     */
+    public function match(string $matching): static
+    {
+        $this->matching = $matching;
+
+        return $this;
+    }
+
+    /**
+     * Match all.
+     *
+     * @return $this
      */
     public function matchAll(): static
     {
@@ -53,7 +69,9 @@ class BasicFilter extends AbstractFilter
     }
 
     /**
-     * Match any
+     * Match any.
+     *
+     * @return $this
      */
     public function matchAny(): static
     {
@@ -85,7 +103,7 @@ class BasicFilter extends AbstractFilter
                     // Match any of multiple non-null values OR null
                     return [
                         'bool' => [
-                            'should'               => [
+                            'should' => [
                                 [
                                     'bool' => [
                                         'must_not' => [
@@ -105,6 +123,7 @@ class BasicFilter extends AbstractFilter
                                     ],
                                 ],
                             ],
+
                             'minimum_should_match' => 1,
                         ],
                     ];

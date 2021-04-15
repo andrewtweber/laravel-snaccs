@@ -2,11 +2,31 @@
 
 namespace Snaccs\Elastic\Filters;
 
+/**
+ * Class KeywordFilter
+ *
+ * @package Snaccs\Elastic\Filters
+ */
 class KeywordFilter extends AbstractFilter
 {
+    /**
+     * KeywordFilter constructor.
+     *
+     * @param string $field
+     * @param string $keyword
+     */
     public function __construct(
+        public string $field,
         public string $keyword
     ) {
+    }
+
+    /**
+     * @return float
+     */
+    public function minScore(): float
+    {
+        return 1;
     }
 
     /**
@@ -69,7 +89,5 @@ class KeywordFilter extends AbstractFilter
                 ],
             ];
         }
-
-        $this->min_score = 1;
     }
 }

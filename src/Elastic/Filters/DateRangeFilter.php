@@ -9,32 +9,17 @@ use Carbon\Carbon;
  *
  * @package Snaccs\Elastic\Filters
  */
-class DateRangeFilter extends DateFilter
+class DateRangeFilter extends RangeFilter
 {
     /**
      * DateRangeFilter constructor.
      *
+     * @param string $field
      * @param Carbon $start
      * @param Carbon $end
      */
-    public function __construct(
-        public Carbon $start,
-        public Carbon $end
-    ) {
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function __construct(string $field, Carbon $start, Carbon $end)
     {
-        return [
-            'range' => [
-                'date_range' => [
-                    'gte' => $this->start->toDateString(),
-                    'lte' => $this->end->toDateString(),
-                ],
-            ],
-        ];
+        parent::__construct($field, $start->toDateString(), $end->toDateString());
     }
 }

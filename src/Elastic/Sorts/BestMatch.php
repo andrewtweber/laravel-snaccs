@@ -2,22 +2,20 @@
 
 namespace Snaccs\Elastic\Sorts;
 
+use Snaccs\Elastic\Enums\Order;
+
 /**
  * Class BestMatch
  *
  * @package Snaccs\Elastic\Sorts
  */
-class BestMatch extends AbstractSort
+class BestMatch extends BasicSort
 {
     /**
-     * @return array
+     * BestMatch constructor.
      */
-    public function toArray()
+    public function __construct()
     {
-        return [
-            '_score' => [
-                'order' => 'desc',
-            ],
-        ];
+        parent::__construct('_score', Order::DESC);
     }
 }

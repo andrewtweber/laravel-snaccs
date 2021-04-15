@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace Snaccs\Elastic;
 
-use App\Support\ElasticFilter;
-use App\Support\Indexable;
-use Carbon\Carbon;
 use Elasticquent\ElasticquentResultCollection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Snaccs\Elastic\Filters\AbstractFilter;
 use Snaccs\Elastic\Filters\BasicFilter;
+use Snaccs\Elastic\Sorts\AbstractSort;
 use Snaccs\Elastic\Sorts\BasicSort;
 use Snaccs\Elastic\Sorts\BestMatch;
 use Snaccs\Elastic\Sorts\DistanceSort;
@@ -18,200 +16,71 @@ use Snaccs\Elastic\Types\Coords;
 /**
  * Class Elastic
  *
- * @package App\Services
+ * @package Snaccs\Elastic
  */
 class Elastic
 {
     /**
-     * @var string
-     */
-    protected $class_name;
-
-    /**
-     * @var int
-     */
-    protected $offset = 0;
-
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * @var array
-     */
-    protected $highlight;
-
-    /**
-     * @var string[]
-     */
-    protected $allowed_filters = [];
-
-    /**
-     * @var int
-     */
-    protected $per_page;
-
-    /**
-     * @var array
-     */
-    protected $queries;
-
-    /**
-     * Requested sort may override default sort
+     * Globally registered filters.
      *
-     * @var string
+     * @var array
      */
-    protected $sort;
+    protected array $filters = [];
 
     /**
-     * @var string
-     */
-    protected $order;
-
-    /**
-     * @var string
-     */
-    protected $default_sort = 'name';
-
-    /**
-     * @var string
-     */
-    protected $secondary_sort = null;
-
-    /**
-     * @var int
-     */
-    protected $min_score = 0;
-
-    /**
-     * @var string
-     */
-    protected $aggregate_by = null;
-
-    /**
-     * Elastic constructor
+     * Globally registered sorts.
      *
-     * @param string $class_name
-     * @param int    $per_page
+     * @var array
      */
-    public function __construct($class_name, Request $request = null, $per_page = 32)
-    {
-        $this->class_name = $class_name;
-        $this->per_page = $per_page;
+    protected array $sorts = [];
 
-        if ($request) {
-            $this->setConfigFromRequest($request);
-        }
+    /**
+     * @var Query
+     */
+    protected Query $query;
+
+    /**
+     * Elastic constructor.
+     *
+     * @param Indexable $model
+     * @param Config    $config
+     */
+    public function __construct(
+        public Indexable $model,
+        public Config $config,
+    ) {
+        $this->query = new Query($config);
     }
 
     /**
-     * TODO: allow multiple e.g. last_name, first_name for coaches
-     * name, city for rinks
-     *
-     * @param array $default_sorts
+     * @param string         $key
+     * @param AbstractFilter $filter
+     */
+    public function registerFilter(string $key, AbstractFilter $filter)
+    {
+        $this->filters[$key] = $filter;
+    }
+
+    /**
+     * @param string       $key
+     * @param AbstractSort $sort
+     */
+    public function registerSort(string $key, AbstractSort $sort)
+    {
+        $this->sorts[$key] = $sort;
+    }
+
+    /**
+     * @param string $name
+     * @param array  $arguments
      *
      * @return $this
      */
-    public function defaultSort(array $default_sorts)
+    public function __call(string $name, array $arguments)
     {
-        if (! $this->sort) {
-            $this->sort = $default_sort;
+        if (method_exists($this->query, $name)) {
+            $this->query->$name($arguments);
         }
-        $this->default_sort = $default_sort;
-        $this->secondary_sort = $secondary_sort;
-
-        return $this;
-    }
-
-    /**
-     * @param int $value
-     */
-    protected function applyBasicFilter($key, $value)
-    {
-        $filter = (new BasicFilter($key, $value));
-
-        // TODO: make this more flexible
-        if ($key === 'tags') {
-            $filter->matchAll();
-        } else {
-            $filter->matchAny();
-        }
-
-        $result = $filter->toArray();
-
-        if ($result !== null) {
-            $this->queries['filter'][] = $result;
-        }
-    }
-
-    /**
-     * @param string[] $allowed_filters
-     *
-     * @return Elastic
-     */
-    public function allowedFilters(array $allowed_filters)
-    {
-        $this->allowed_filters = array_merge($this->allowed_filters, $allowed_filters);
-
-        return $this;
-    }
-
-    /**
-     * @param array $filters
-     *
-     * @return Elastic
-     */
-    public function filter(array $filters)
-    {
-        $this->filters = array_merge($this->filters, $filters);
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     */
-    public function __call($name, $arguments)
-    {
-        if (str_starts_with($name, 'apply') && str_ends_with($name, 'Filter')) {
-            $name = str_replace('apply', '', $name);
-            $name = str_replace('Filter', '', $name);
-            $name = Str::snake($name);
-
-            $this->applyBasicFilter($name, $arguments[0]);
-        }
-    }
-
-    /**
-     * @param Request $request
-     */
-    protected function setConfigFromRequest(Request $request)
-    {
-        // Pagination / infinite scrolling
-        if ($request->filled('page')) {
-            $this->offset = (($request->get('page', 1) - 1) * $this->per_page);
-        } else {
-            $this->offset = $request->get('start', 0);
-        }
-
-        if ($request->filled('sort')) {
-            $this->sort = $request->get('sort');
-        }
-        if ($request->filled('order')) {
-            $this->order = $request->get('order');
-        }
-    }
-
-    /**
-     * @param string $column
-     *
-     * @return $this
-     */
-    public function aggregateBy(string $column)
-    {
-        $this->aggregate_by = $column;
 
         return $this;
     }
@@ -219,83 +88,47 @@ class Elastic
     /**
      * @return array
      */
-    public function build()
+    public function build(): array
     {
-        /** @var IndexableInterface $model */
-        $model = new $this->class_name;
+        $model = $this->model;
 
-        $this->queries = [
-            'filter' => [],
-        ];
-
-        foreach ($this->filters as $key => $value) {
-            if (! in_array($key, $this->allowed_filters)) {
+        foreach ($this->config->filters as $key => $value) {
+            if (! in_array($key, $model->allowedFilters())) {
                 continue;
             }
             if ($value === null || $value === '') {
+                // TODO: are you sure about this?
                 continue;
             }
 
-            $method = Str::camel("apply_{$key}_filter");
+            $filter = $this->filters[$key] ?? new BasicFilter($key, $value);
 
-            $this->$method($value);
+            $this->query->addFilter($filter);
         }
 
         // TODO: date filters should be limited to 1
         // TODO: rating, created_at should default order to descending
         // TODO: if KeywordFilter overrides all other filters, should also force BestMatch sorting
 
-        $sorts = [
-            'best_match' => new BestMatch(),
-            'random'     => new RandomSort(),
-            'distance'   => new DistanceSort(new Coords($this->latitude, $this->longitude)),
-            //'past_and_ongoing' => new PastAndOngoingSort(),
-            //'past' => new PastSort(),
-        ];
-
-        $final = [];
+        $sorts = [];
         if (! isset($sorts[$sort])) {
-            $final[] = new BasicSort($sort, $order);
+            $sorts[] = new BasicSort($sort, $order);
         }
         if ($sort !== $this->default_sort) {
-            $final[] = new BasicSort($this->default_sort);
+            $sorts[] = new BasicSort($this->default_sort);
         }
         if ($sort !== $this->secondary_sort) {
-            $final[] = new BasicSort($this->secondary_sort);
+            $sorts[] = new BasicSort($this->secondary_sort);
         }
 
         $sorts = [];
-        foreach ($final as $sort) {
+        foreach ($sorts as $sort) {
             $sorts = array_merge($sorts, $sort->toArray());
         }
 
-        $params = [
-            'index' => $model->getIndexName(),
-            'type'  => 'entity',
-            'body'  => [
-                'query'     => [
-                    'bool' => $this->queries,
-                ],
-                'sort'      => $sorts,
-                'from'      => $this->offset,
-                'size'      => $this->per_page,
-                'min_score' => $this->min_score,
-            ],
-        ];
-
-        if ($this->aggregate_by) {
-            $params['body']['collapse'] = [
-                'field' => $this->aggregate_by,
-            ];
-        }
-
-        if ($this->highlight) {
-            $params['body']['highlight'] = $this->highlight;
-        }
-
-        return $params;
+        return $this->query->toArray();
     }
-    
+
     /**
      * @return ElasticquentResultCollection
      */
@@ -305,6 +138,6 @@ class Elastic
 
         //dd($params);
 
-        return $this->class_name::complexSearch($params);
+        return get_class($this->model)::complexSearch($params);
     }
 }

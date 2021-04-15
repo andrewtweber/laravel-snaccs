@@ -3,6 +3,7 @@
 namespace Snaccs\Elastic\Sorts;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Snaccs\Elastic\Enums\Order;
 
 /**
  * Class AbstractSort
@@ -11,7 +12,20 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 abstract class AbstractSort implements Arrayable
 {
-    public string $order = 'asc';
+    public string $order;
+
+    /**
+     * AbstractSort constructor.
+     *
+     * @param string      $field
+     * @param string|null $order
+     */
+    public function __construct(
+        public string $field,
+        ?string $order = null
+    ) {
+        $this->order = $order ?? Order::ASC;
+    }
 
     /**
      * @param string $order
@@ -30,7 +44,7 @@ abstract class AbstractSort implements Arrayable
      */
     public function ascending(): static
     {
-        $this->order = 'asc';
+        $this->order = Order::ASC;
 
         return $this;
     }
@@ -40,7 +54,7 @@ abstract class AbstractSort implements Arrayable
      */
     public function descending(): static
     {
-        $this->order = 'desc';
+        $this->order = Order::DESC;
 
         return $this;
     }

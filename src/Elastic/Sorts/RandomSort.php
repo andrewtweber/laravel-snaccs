@@ -20,6 +20,8 @@ class RandomSort extends AbstractSort
      */
     public function __construct(?string $seed = null)
     {
+        parent::__construct('_id');
+
         $this->seed = $seed ?? Str::random(16);
     }
 
@@ -33,9 +35,9 @@ class RandomSort extends AbstractSort
                 'type'   => 'number',
                 'script' => [
                     'lang'   => 'painless',
-                    'source' => "return (doc['_id'].value + params.salt).hashCode()",
+                    'source' => "return (doc['_id'].value + params.seed).hashCode()",
                     'params' => [
-                        'salt' => $this->seed,
+                        'seed' => $this->seed,
                     ],
                 ],
                 'order'  => $this->order, // order is kind of irrelevant in this

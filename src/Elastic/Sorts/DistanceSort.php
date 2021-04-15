@@ -2,6 +2,8 @@
 
 namespace Snaccs\Elastic\Sorts;
 
+use Snaccs\Elastic\Enums\DistanceType;
+use Snaccs\Elastic\Enums\Order;
 use Snaccs\Elastic\Types\Coords;
 
 /**
@@ -11,21 +13,19 @@ use Snaccs\Elastic\Types\Coords;
  */
 class DistanceSort extends AbstractSort
 {
-    // 'arc' = more accurate
-    // 'plane' = faster
-    public const TYPE_ARC = 'arc';
-    public const TYPE_PLANE = 'plane';
-
     /**
      * DistanceSort constructor.
      *
      * @param Coords $coords
      * @param string $units
+     * @param string $field
      */
     public function __construct(
+        public string $field,
         public Coords $coords,
-        public string $units = 'miles'
+        public string $units = 'miles',
     ) {
+        parent::__construct($field, Order::ASC);
     }
 
     /**
@@ -35,11 +35,11 @@ class DistanceSort extends AbstractSort
     {
         return [
             '_geo_distance' => [
-                'coords'          => (string)$this->coords,
+                $this->field      => (string)$this->coords,
                 'order'           => $this->order,
                 'unit'            => $this->units,
                 'mode'            => 'min',
-                'distance_type'   => static::TYPE_ARC,
+                'distance_type'   => DistanceType::ARC,
                 'ignore_unmapped' => true,
             ],
         ];

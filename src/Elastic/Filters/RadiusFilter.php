@@ -17,12 +17,13 @@ class RadiusFilter extends AbstractFilter
      * @param Coords $coords
      * @param float  $radius
      * @param string $units
+     * @param string $field
      */
     public function __construct(
         public string $field,
         public Coords $coords,
-        public $radius,
-        public string $units = 'miles'
+        public float $radius,
+        public string $units = 'miles',
     ) {
     }
 
@@ -33,8 +34,8 @@ class RadiusFilter extends AbstractFilter
     {
         return [
             'geo_distance' => [
-                'distance' => $this->radius . $this->units,
-                'coords'   => $this->coords->toArray(),
+                'distance'   => $this->radius . $this->units,
+                $this->field => $this->coords->toArray(),
             ],
         ];
     }

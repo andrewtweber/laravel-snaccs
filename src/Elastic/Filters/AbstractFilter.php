@@ -11,4 +11,11 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 abstract class AbstractFilter implements Arrayable
 {
+    /**
+     * @return float
+     */
+    public function minScore(): float
+    {
+        return 0;
+    }
 }
