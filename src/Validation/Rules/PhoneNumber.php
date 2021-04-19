@@ -56,9 +56,13 @@ class PhoneNumber implements Rule
     public function message()
     {
         if ($this->country) {
-            return 'The :attribute field is not a valid ' . $this->country . ' phone number.';
+            return trans()->has('validation.phone_with_country')
+                ? trans('validation.phone_with_country', ['country' => $this->country])
+                : 'The :attribute field is not a valid ' . $this->country . ' phone number.';
         }
 
-        return 'The :attribute field is not a valid phone number.';
+        return trans()->has('validation.phone')
+            ? trans('validation.phone')
+            : 'The :attribute field is not a valid phone number.';
     }
 }

@@ -72,9 +72,13 @@ class Website implements Rule
     public function message()
     {
         if (count($this->allowedDomains) > 0) {
-            return 'The :attribute field is not a valid ' . $this->allowedDomains[0] . ' URL.';
+            return trans()->has('validation.website_with_domain')
+                ? trans('validation.website_with_domain', ['domain' => $this->allowedDomains[0]])
+                : 'The :attribute field is not a valid ' . $this->allowedDomains[0] . ' URL.';
         }
 
-        return 'The :attribute field is not a valid URL.';
+        return trans()->has('validation.website')
+            ? trans('validation.website')
+            : 'The :attribute field is not a valid URL.';
     }
 }

@@ -79,6 +79,8 @@ class Handle implements Rule
      */
     public function message()
     {
-        return "The :attribute field is not a valid {$this->label} handle.";
+        return trans()->has('validation.handle')
+            ? trans('validation.handle', ['label' => $this->label])
+            : "The :attribute field is not a valid {$this->label} handle.";
     }
 }
