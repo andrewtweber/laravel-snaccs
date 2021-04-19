@@ -270,9 +270,9 @@ class FormattingTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,          2, null]
-     *           [0,             2, "0 b"]
-     *           [1,             2, "1 b"]
-     *           [1023,          2, "1023 b"]
+     *           [0,             2, "0 bytes"]
+     *           [1,             2, "1 bytes"]
+     *           [1023,          2, "1023 bytes"]
      *           [1024,          0, "1 kb"]
      *           [1024,          1, "1 kb"]
      *           [1024,          2, "1 kb"]
@@ -303,9 +303,9 @@ class FormattingTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,          2, null]
-     *           [0,             2, "0 bytes"]
-     *           [1,             2, "1 bytes"]
-     *           [1023,          2, "1023 bytes"]
+     *           [0,             2, "0 b"]
+     *           [1,             2, "1 b"]
+     *           [1023,          2, "1023 b"]
      *           [1024,          2, "1k"]
      *           [1048576,       2, "1M"]
      *           [1073741824,    2, "1G"]
@@ -313,7 +313,7 @@ class FormattingTest extends LaravelTestCase
      */
     public function format_bytes_with_config(?int $bytes, int $precision, ?string $expected)
     {
-        Config::set('formatting.bytes', [' bytes', 'k', 'M', 'G', 'T']);
+        Config::set('formatting.bytes', [' b', 'k', 'M', 'G', 'T']);
 
         $this->assertSame($expected, format_bytes($bytes, $precision));
     }
