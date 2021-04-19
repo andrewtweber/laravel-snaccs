@@ -6,6 +6,7 @@ use Elasticquent\ElasticquentResultCollection;
 use Illuminate\Support\Str;
 use Snaccs\Elastic\Filters\AbstractFilter;
 use Snaccs\Elastic\Filters\BasicFilter;
+use Snaccs\Elastic\Filters\KeywordFilter;
 use Snaccs\Elastic\Sorts\AbstractSort;
 use Snaccs\Elastic\Sorts\BasicSort;
 use Snaccs\Elastic\Sorts\BestMatch;
@@ -41,15 +42,13 @@ class Elastic
 
     /**
      * Elastic constructor.
-     *
-     * @param Indexable $model
-     * @param Config    $config
      */
-    public function __construct(
-        public Indexable $model,
-        public Config $config,
-    ) {
-        $this->query = new Query($config);
+    public function __construct()
+    {
+        $this->registerFilter('keyword', KeywordFilter::class);
+
+        $this->registerSort('best_match', new BestMatch());
+        $this->registerSort('random', new RandomSort()); // @todo seed
     }
 
     /**
@@ -68,21 +67,6 @@ class Elastic
     public function registerSort(string $key, AbstractSort $sort)
     {
         $this->sorts[$key] = $sort;
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return $this
-     */
-    public function __call(string $name, array $arguments)
-    {
-        if (method_exists($this->query, $name)) {
-            $this->query->$name($arguments);
-        }
-
-        return $this;
     }
 
     /**
@@ -130,14 +114,13 @@ class Elastic
     }
 
     /**
-     * @return ElasticquentResultCollection
+     * @param Indexable $model
+     * @param Config    $config
+     *
+     * @return Query
      */
-    public function query(&$params = null)
+    public function query(Indexable $model, Config $config): Query
     {
-        $params = $this->build();
-
-        //dd($params);
-
-        return get_class($this->model)::complexSearch($params);
+        return new Query($model, $config);
     }
 }

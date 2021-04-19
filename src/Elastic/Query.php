@@ -2,6 +2,7 @@
 
 namespace Snaccs\Elastic;
 
+use Elasticquent\ElasticquentResultCollection;
 use Illuminate\Contracts\Support\Arrayable;
 use Snaccs\Elastic\Filters\AbstractFilter;
 
@@ -24,6 +25,7 @@ class Query implements Arrayable
      * @param Config $config
      */
     public function __construct(
+        public Indexable $model,
         public Config $config
     ) {
         $this->queries = [
@@ -87,5 +89,15 @@ class Query implements Arrayable
         }
 
         return $params;
+    }
+
+    /**
+     * @param array|null $params
+     *
+     * @return ElasticquentResultCollection
+     */
+    public function get(?array &$params = null)
+    {
+        return get_class($this->model)::complexSearch($params);
     }
 }

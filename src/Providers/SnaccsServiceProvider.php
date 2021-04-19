@@ -5,6 +5,7 @@ namespace Snaccs\Providers;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
+use Snaccs\Elastic\Elastic;
 
 /**
  * Class SnaccsServiceProvider
@@ -33,5 +34,7 @@ class SnaccsServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom($formatting, 'formatting');
         $this->mergeConfigFrom($system, 'system');
+
+        $this->app->instance(Elastic::class, new Elastic());
     }
 }
