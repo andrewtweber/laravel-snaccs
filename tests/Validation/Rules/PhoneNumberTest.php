@@ -2,7 +2,7 @@
 
 namespace Snaccs\Tests\Validation\Rules;
 
-use Snaccs\Tests\TestCase;
+use Snaccs\Tests\LaravelTestCase;
 use Snaccs\Validation\Rules\PhoneNumber;
 
 /**
@@ -10,7 +10,7 @@ use Snaccs\Validation\Rules\PhoneNumber;
  *
  * @package Snaccs\Tests\Validation\Rules
  */
-class PhoneNumberTest extends TestCase
+class PhoneNumberTest extends LaravelTestCase
 {
     /**
      * @test

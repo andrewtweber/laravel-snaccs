@@ -2,7 +2,7 @@
 
 namespace Snaccs\Tests\Validation\Rules;
 
-use Snaccs\Tests\TestCase;
+use Snaccs\Tests\LaravelTestCase;
 use Snaccs\Validation\Rules\Instagram;
 
 /**
@@ -10,7 +10,7 @@ use Snaccs\Validation\Rules\Instagram;
  *
  * @package Snaccs\Tests\Validation\Rules
  */
-class InstagramTest extends TestCase
+class InstagramTest extends LaravelTestCase
 {
     /**
      * @test

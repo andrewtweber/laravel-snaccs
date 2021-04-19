@@ -2,7 +2,7 @@
 
 namespace Snaccs\Tests\Validation\Rules;
 
-use Snaccs\Tests\TestCase;
+use Snaccs\Tests\LaravelTestCase;
 use Snaccs\Validation\Rules\Website;
 
 /**
@@ -10,7 +10,7 @@ use Snaccs\Validation\Rules\Website;
  *
  * @package Snaccs\Tests\Validation\Rules
  */
-class WebsiteTest extends TestCase
+class WebsiteTest extends LaravelTestCase
 {
     /**
      * @test

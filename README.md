@@ -205,6 +205,9 @@ Phone Number validation ignores extra characters and just checks that 7-15 digit
 are supplied. If the country is CA/US/unspecified, it also verifies that there are
 exactly ten digits (or a `1` followed by ten digits).
 
+You can override the translations `phone_with_country` and `phone` in your validation
+language file if you like.
+
 ```php
 use Snaccs\Validation\Rules\PhoneNumber;
 
@@ -233,6 +236,9 @@ $rules = [
 The Website casting should be paired with the Website validation rule.
 This validates the URL but allows them to omit the scheme (defaults to http).
 It also allows you to restrict to specific domains.
+
+You can override the translations `website_with_domain` and `website` in your validation
+language file if you like.
 
 ```php
 use Snaccs\Validation\Rules\Website;
@@ -306,9 +312,12 @@ $rules = [
 ];
 ```
 
-Instagram & Twitter validation rules accept valid handles (with the appropriate length
+Social media validation rules accept valid handles (with the appropriate length
 and special character checks) with or without the `@` prefix, and also accept URLs to
 profiles. They should be used with the `parse_handle` method.
+
+Some rules are pre-defined; you can also extend the `Handle` validation rule to add custom
+ones. You can also override the `handle` translation message if you like.
 
 ```php
 use Snaccs\Validation\Rules\Instagram;
