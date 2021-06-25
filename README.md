@@ -366,7 +366,8 @@ class AccountController extends Controller
 ## Hashids
 
 If your model has a hashed ID (to make URL guessing more difficult, etc.)
-you can simply use the `HashedID` trait:
+you can simply use the `HashedID` trait. Make sure to also publish the 
+hashid config file (`php artisan vendor:publish`)
 
 ```php
 use Illuminate\Database\Eloquent\Model;

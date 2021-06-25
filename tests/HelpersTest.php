@@ -110,27 +110,43 @@ class HelpersTest extends TestCase
      * @param string|null $value
      * @param string|null $expected
      *
-     * @testWith [null,                               null]
-     *           ["",                                 ""]
-     *           ["_legal.",                          "_legal."]
-     *           [".legal_",                          ".legal_"]
-     *           ["_legal_",                          "_legal_"]
-     *           [".legal.",                          ".legal."]
-     *           [" ferretpapa ",                     "ferretpapa"]
-     *           ["ferret papa",                      "ferret papa"]
-     *           ["ferretpapa",                       "ferretpapa"]
-     *           ["@ferretpapa",                      "ferretpapa"]
-     *           [" @ ferretpapa ",                   "ferretpapa"]
-     *           ["/ferretpapa",                      "/ferretpapa"]
-     *           ["instagram.com/ferretpapa",         "ferretpapa"]
-     *           ["instagram.com/ferretpapa/",        "ferretpapa"]
-     *           ["instagram.com/@ferretpapa",        "ferretpapa"]
-     *           ["https://instagram.com/ferretpapa", "ferretpapa"]
-     *           ["twitter.com/#!ferretpapa",         "ferretpapa"]
+     * @testWith [null,                       null]
+     *           ["",                         ""]
+     *           ["_legal.",                  "_legal."]
+     *           [".legal_",                  ".legal_"]
+     *           ["_legal_",                  "_legal_"]
+     *           [".legal.",                  ".legal."]
+     *           [" ferretpapa ",             "ferretpapa"]
+     *           ["ferret papa",              "ferret papa"]
+     *           ["ferretpapa",               "ferretpapa"]
+     *           ["@ferretpapa",              "ferretpapa"]
+     *           [" @ ferretpapa ",           "ferretpapa"]
+     *           ["/ferretpapa",              "/ferretpapa"]
+     *           ["instagram.com/ferretpapa", "instagram.com/ferretpapa"]
      */
     public function parse_handle(?string $value, ?string $expected)
     {
         $this->assertSame($expected, parse_handle($value));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $value
+     * @param array       $allowed_domains
+     * @param string|null $expected
+     *
+     * @testWith ["instagram.com/ferretpapa",         ["instagram.com"], "ferretpapa"]
+     *           ["instagram.com/ferretpapa/",        ["instagram.com"], "ferretpapa"]
+     *           ["instagram.com/@ferretpapa",        ["instagram.com"], "ferretpapa"]
+     *           ["https://instagram.com/ferretpapa", ["instagram.com"], "ferretpapa"]
+     *           ["twitter.com/#!ferretpapa",         ["instagram.com"], "twitter.com/#!ferretpapa"]
+     *           ["twitter.com/#!ferretpapa",         ["twitter.com"],   "ferretpapa"]
+     *           ["instagram.com/ferretpapa",         ["twitter.com"],   "instagram.com/ferretpapa"]
+     */
+    public function parse_handle_with_domains(?string $value, array $allowed_domains, ?string $expected)
+    {
+        $this->assertSame($expected, parse_handle($value, $allowed_domains));
     }
 
     /**

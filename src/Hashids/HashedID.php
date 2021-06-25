@@ -10,6 +10,8 @@ use Vinkla\Hashids\Facades\Hashids;
  * Trait HashedID
  *
  * @package Snaccs\Hashids
+ *
+ * @property string $display_id
  */
 trait HashedID
 {

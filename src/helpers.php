@@ -291,17 +291,17 @@ if (! function_exists('parse_handle')) {
      * This should be paired with the Instagram/Twitter validation rules.
      *
      * @param string|null $url
+     * @param array       $allowed_domains
      *
      * @return string|null
      */
-    #[Pure] function parse_handle(?string $url): ?string
+    #[Pure] function parse_handle(?string $url, array $allowed_domains = []): ?string
     {
         if ($url === null) {
             return null;
         }
 
-        // @todo make this more generic
-        if (! Str::contains($url, 'twitter.com') && ! Str::contains($url, 'instagram.com')) {
+        if (empty($allowed_domains) || ! Str::contains($url, $allowed_domains)) {
             return trim(str_replace('@', '', $url));
         }
 

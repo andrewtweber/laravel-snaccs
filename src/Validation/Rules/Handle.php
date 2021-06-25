@@ -15,6 +15,7 @@ class Handle implements Rule
     protected string $allowed_special_chars;
     protected int $min;
     protected int $max;
+    protected array $allowed_domains = [];
 
     /**
      * @param int $min
@@ -58,7 +59,7 @@ class Handle implements Rule
             return true;
         }
 
-        $value = parse_handle($value);
+        $value = parse_handle($value, $this->allowed_domains);
 
         $chars = $this->allowed_special_chars;
 

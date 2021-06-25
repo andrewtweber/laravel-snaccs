@@ -2,15 +2,15 @@
 
 namespace Snaccs\Tests\Validation\Rules;
 
-use Snaccs\Tests\TestCase;
-use Snaccs\Validation\Rules\Twitter;
+use Snaccs\Tests\LaravelTestCase;
+use Snaccs\Validation\Rules\TikTok;
 
 /**
- * Class TwitterTest
+ * Class TikTokTest
  *
  * @package Snaccs\Tests\Validation\Rules
  */
-class TwitterTest extends TestCase
+class TikTokTest extends LaravelTestCase
 {
     /**
      * @test
@@ -21,22 +21,25 @@ class TwitterTest extends TestCase
      *           [""]
      *           [" ferretpapa "]
      *           ["ferretpapa"]
+     *           ["_legal."]
+     *           [".legal_"]
      *           ["_legal_"]
+     *           [".legal."]
      *           ["@ferretpapa"]
      *           [" @ ferretpapa "]
-     *           ["twitter.com/ferretpapa"]
-     *           ["twitter.com/ferretpapa/"]
-     *           ["twitter.com/@ferretpapa"]
-     *           ["twitter.com/#!ferretpapa"]
-     *           ["https://twitter.com/ferretpapa"]
-     *           ["nottoolong12345"]
-     *           ["@nottoolong12345"]
+     *           ["tiktok.com/ferretpapa"]
+     *           ["tiktok.com/ferretpapa/"]
+     *           ["tiktok.com/@ferretpapa"]
+     *           ["https://tiktok.com/ferretpapa"]
+     *           ["ab"]
+     *           ["nottoolong12345678901234"]
+     *           ["@nottoolong12345678901234"]
      */
     public function passes(?string $value)
     {
-        $rule = new Twitter();
+        $rule = new TikTok();
 
-        $this->assertTrue($rule->passes('twitter', $value));
+        $this->assertTrue($rule->passes('tiktok', $value));
     }
 
     /**
@@ -47,17 +50,17 @@ class TwitterTest extends TestCase
      * @testWith ["@"]
      *           [" "]
      *           ["/ferretpapa"]
-     *           ["illegal.chars"]
      *           ["illegal chars"]
      *           ["illegal+chars"]
-     *           ["toolong890123456"]
+     *           ["a"]
+     *           ["toolong890123456789012345"]
      *           ["instagram.com/ferretpapa"]
      *           ["https://instagram.com/ferretpapa"]
      */
     public function fails(?string $value)
     {
-        $rule = new Twitter();
+        $rule = new TikTok();
 
-        $this->assertFalse($rule->passes('twitter', $value));
+        $this->assertFalse($rule->passes('tiktok', $value));
     }
 }

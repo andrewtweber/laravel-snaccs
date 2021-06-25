@@ -13,4 +13,5 @@ class TikTok extends Handle
     protected string $allowed_special_chars = '_.';
     protected int $min = 2;
     protected int $max = 24;
+    protected array $allowed_domains = ['tiktok.com'];
 }

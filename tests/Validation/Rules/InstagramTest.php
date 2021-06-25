@@ -52,6 +52,8 @@ class InstagramTest extends LaravelTestCase
      *           ["illegal chars"]
      *           ["illegal+chars"]
      *           ["toolong890123456789012345678901"]
+     *           ["twitter.com/ferretpapa"]
+     *           ["https://twitter.com/ferretpapa"]
      */
     public function fails(?string $value)
     {
