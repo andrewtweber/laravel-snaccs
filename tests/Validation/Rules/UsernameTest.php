@@ -88,6 +88,7 @@ class UsernameTest extends LaravelTestCase
      *           ["te,st",  "The username must consist of letters, numbers, and -_. only."]
      *           ["te st",  "The username must consist of letters, numbers, and -_. only."]
      *           ["admin",  "That username is not allowed."]
+     *           ["Admin",  "That username is not allowed."]
      *           ["café",   "The username must consist of letters, numbers, and -_. only."]
      *           ["toolong8901234567890123456", "The username must be 25 or fewer characters."]
      */

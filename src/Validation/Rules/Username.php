@@ -82,7 +82,8 @@ class Username implements Rule
         }
 
         // Reserved usernames.
-        if (in_array($value, $config['reserved'])) {
+        $reserved = array_map('strtolower', $config['reserved']);
+        if (in_array(strtolower($value), $reserved)) {
             $this->message = "That username is not allowed.";
 
             return false;
