@@ -46,10 +46,11 @@ if (! function_exists('dispatch_with_delay')) {
      *
      * @param ShouldQueue|Queueable $job
      * @param int                   $delay
+     * @param int|null              $initial_delay
      *
      * @return \Illuminate\Foundation\Bus\PendingDispatch
      */
-    function dispatch_with_delay(ShouldQueue $job, int $delay = 15)
+    function dispatch_with_delay(ShouldQueue $job, int $delay = 15, int $initial_delay = null)
     {
         if (! in_array(Queueable::class, class_uses_deep($job))) {
             throw new InvalidArgumentException(get_class($job) . " does not use Queueable trait");
@@ -61,7 +62,11 @@ if (! function_exists('dispatch_with_delay')) {
             ->first();
 
         if ($last_job && $last_job->available_at instanceof Carbon) {
+            // Other queued jobs pending - set the delay after the latest one
             $job->delay($last_job->available_at->addSeconds($delay));
+        } else {
+            // Nothing in the queue - set the initial delay
+            $job->delay(Carbon::now()->addSeconds($initial_delay ?? $delay));
         }
 
         return dispatch($job);
@@ -139,12 +144,12 @@ if (! function_exists('format_phone')) {
     /**
      * Display a phone number nicely
      *
-     * @todo if it's an alphabetical phone number, don't break it into pieces
-     *
      * @param string|null $number
      * @param string|null $country
      *
      * @return string|null
+     * @todo if it's an alphabetical phone number, don't break it into pieces
+     *
      */
     #[Pure] function format_phone(?string $number, string $country = null): ?string
     {
