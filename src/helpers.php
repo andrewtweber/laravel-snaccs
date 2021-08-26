@@ -61,12 +61,18 @@ if (! function_exists('dispatch_with_delay')) {
             ->orderBy('available_at', 'desc')
             ->first();
 
+        // The soonest this job should be available.
+        $earliest = Carbon::now()->addSeconds($initial_delay ?? $delay);
+
         if ($last_job && $last_job->available_at instanceof Carbon) {
-            // Other queued jobs pending - set the delay after the latest one
-            $job->delay($last_job->available_at->addSeconds($delay));
+            // If other queued jobs are pending, it should be at least `$delay` seconds
+            // after the last one.
+            $next_available = $last_job->available_at->addSeconds($delay);
+
+            $job->delay($earliest->gt($next_available) ? $earliest : $next_available);
         } else {
-            // Nothing in the queue - set the initial delay
-            $job->delay(Carbon::now()->addSeconds($initial_delay ?? $delay));
+            // Nothing in the queue - set the initial delay.
+            $job->delay($earliest);
         }
 
         return dispatch($job);

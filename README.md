@@ -146,8 +146,9 @@ Some helper methods:
 // delay tracked separately.
 // Note that the job class must implement the ShouldQueue interface and use
 // the Queueable trait.
-dispatch_with_delay($job); // Defaults to 15 seconds
-dispatch_with_delay($job, 60); // 1 minute
+dispatch_with_delay($job); // Defaults to 15 seconds between jobs
+dispatch_with_delay($job, 60); // Wait 1 minute for first job, and 1 minute between jobs
+dispatch_with_delay($job, 60, 600); // Wait 10 minutes for first job, then 1 minute between jobs
 
 // Ordinal
 ordinal(1); // "1st"
