@@ -60,5 +60,14 @@ class Menu
 
             $this->condensed = true;
         }
+
+        // If any dropdown has only 1 item, and that item is the same link as the parent,
+        //  replace the dropdown with the single link.
+        foreach ($this->items as $index => $item) {
+            if (count($item->children) === 1 && in_array($item->url, [null, $item->children[0]->url])) {
+                $this->items[$index] = $item->children[0];
+                $this->items[$index]->condensed = true;
+            }
+        }
     }
 }

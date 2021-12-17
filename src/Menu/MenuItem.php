@@ -24,14 +24,14 @@ class MenuItem
      * MenuItem constructor.
      *
      * @param string      $label
-     * @param string      $url
+     * @param string|null $url
      * @param string|null $section
      * @param string|null $icon
      * @param mixed       $permission
      */
     public function __construct(
         public string $label,
-        public string $url,
+        public ?string $url,
         public ?string $section = null,
         public ?string $icon = null,
         public mixed $permission = null
