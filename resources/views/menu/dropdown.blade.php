@@ -8,10 +8,14 @@
             isset($item->badge) ? $item->badge->html() : '' }}</a>
     <div class="dropdown-menu" aria-labelledby="{{ $item->section ?? 'nav' }}Dropdown">
         @foreach ($item->children as $child)
-            <a href="{{ $child->url }}" class="dropdown-item">
-                <i class="{{ $child->icon }} fa-fw mr-2"></i><span>{{ $child->label }}</span>{{
-                    isset($child->badge) ? $child->badge->html() : '' }}
-            </a>
+            @if ($child instanceof \Snaccs\Menu\MenuDivider)
+                <div class="dropdown-divider"></div>
+            @else
+                <a href="{{ $child->url }}" class="dropdown-item">
+                    <i class="{{ $child->icon }} fa-fw mr-2"></i><span>{{ $child->label }}</span>{{
+                        isset($child->badge) ? $child->badge->html() : '' }}
+                </a>
+            @endif
         @endforeach
     </div>
 </li>

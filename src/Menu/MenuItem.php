@@ -40,6 +40,16 @@ class MenuItem
     }
 
     /**
+     * @return self
+     */
+    public function divider(): self
+    {
+        $this->children->push(new MenuDivider());
+
+        return $this;
+    }
+
+    /**
      * @param MenuItem      $item
      * @param callable|null $check
      *

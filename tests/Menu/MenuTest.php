@@ -2,7 +2,9 @@
 
 namespace Tests\Menu;
 
-class MenuTest
+use Snaccs\Tests\TestCase;
+
+class MenuTest extends TestCase
 {
-    
+
 }
