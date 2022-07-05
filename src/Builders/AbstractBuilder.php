@@ -92,14 +92,14 @@ abstract class AbstractBuilder
     /**
      * This should use the $data array to create and save the model.
      *
-     * @return Model
+     * @return Model|null
      */
     abstract protected function build();
 
     /**
      * Save within database transaction.
      *
-     * @return Model
+     * @return Model|null
      */
     final public function save()
     {
@@ -117,13 +117,15 @@ abstract class AbstractBuilder
                 DB::commit();
             }
 
-            // Load any database column defaults, etc.
-            $entity = $entity->fresh();
+            if ($entity) {
+                // Load any database column defaults, etc.
+                $entity = $entity->fresh();
 
-            // Note: if the elasticquent package is not installed (i.e. interface
-            // does not exist), this will just be skipped without throwing an error.
-            if ($this->index && $entity instanceof ElasticquentInterface) {
-                $entity->addToIndex();
+                // Note: if the elasticquent package is not installed (i.e. interface
+                // does not exist), this will just be skipped without throwing an error.
+                if ($this->index && $entity instanceof ElasticquentInterface) {
+                    $entity->addToIndex();
+                }
             }
         } catch (Throwable $e) {
             // Rollback if there's an exception
@@ -143,7 +145,7 @@ abstract class AbstractBuilder
      * Most things would work better in an Observer's `created` method,
      * but you can handle any additional logic here if you like.
      *
-     * @param Model $entity
+     * @param Model|null $entity
      */
     protected function after($entity)
     {
