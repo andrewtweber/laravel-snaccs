@@ -42,11 +42,11 @@ class PhoneNumber implements Rule
         try {
             // TODO: this is similar to `parse_phone`
             $phoneUtil = PhoneNumberUtil::getInstance();
-            $number = $phoneUtil->parse($value, $this->country_code ?? 'US');
+            $phoneUtil->parse($value, $this->country_code ?? 'US');
 
             $value = parse_phone($value, $this->country_code);
 
-            if ($number->getCountryCode() == 1) {
+            if (in_array($this->country_code, [null, 'CA', 'US'])) {
                 return strlen($value) === 10;
             }
 
