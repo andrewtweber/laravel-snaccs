@@ -159,11 +159,12 @@ if (! function_exists('format_phone')) {
      *
      * @param string|null $number
      * @param string|null $country_code
+     * @param int|null    $format
      *
      * @return string|null
      * @throws NumberParseException
      */
-    function format_phone(?string $number, ?string $country_code = null): ?string
+    function format_phone(?string $number, ?string $country_code = null, ?int $format = null): ?string
     {
         if ($number === null) {
             return null;
@@ -180,11 +181,11 @@ if (! function_exists('format_phone')) {
 
         // national format for US and CA
         if ($number->getCountryCode() == 1) {
-            return $phoneUtil->format($number, PhoneNumberFormat::NATIONAL);
+            return $phoneUtil->format($number, $format ?? PhoneNumberFormat::NATIONAL);
         }
 
         // international format for other countries
-        return $phoneUtil->format($number, PhoneNumberFormat::INTERNATIONAL);
+        return $phoneUtil->format($number, $format ?? PhoneNumberFormat::INTERNATIONAL);
     }
 }
 
@@ -283,11 +284,10 @@ if (! function_exists('parse_phone')) {
     /**
      * @param string|null $value
      * @param string|null $country_code
-     * @param bool        $throw
      *
      * @return string|null
      */
-    #[Pure] function parse_phone(?string $value, ?string $country_code = null, bool $throw = false): ?string
+    #[Pure] function parse_phone(?string $value, ?string $country_code = null): ?string
     {
         if ($value === null) {
             return null;
@@ -301,19 +301,27 @@ if (! function_exists('parse_phone')) {
 
             // strip +1 for US and CA
             if ($number->getCountryCode() == 1) {
-                return substr($e164, 2);
+                return substr($e164, 2)
+                    . ($number->hasExtension() ? 'EXT' . $number->getExtension() : '');
             }
 
             // strip + sign for other countries
             return ltrim($e164, '+');
         } catch (NumberParseException $e) {
-            $value = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
+            $number = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
+            $extension = null;
 
-            if (strlen($value) == 11 && substr($value, 0, 1) == 1) {
-                $value = substr($value, 1);
+            if (Str::contains($number, 'EXT')) {
+                $parts = explode('EXT', $number);
+                $extension = array_pop($parts);
+                $number = implode('', $parts);
             }
 
-            return $value;
+            if (strlen($number) == 11 && substr($number, 0, 1) == 1) {
+                $number = substr($number, 1);
+            }
+
+            return $number . ($extension ? 'EXT' . $extension : '');
         }
     }
 }

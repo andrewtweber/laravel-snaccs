@@ -3,6 +3,7 @@
 namespace Snaccs\Tests;
 
 use Illuminate\Support\Facades\Config;
+use libphonenumber\PhoneNumberFormat;
 
 /**
  * Class FormattingTest
@@ -230,6 +231,33 @@ class FormattingTest extends LaravelTestCase
     public function format_phone_with_country(?string $number, ?string $country, ?string $expected)
     {
         $this->assertSame($expected, format_phone($number, $country));
+    }
+
+    /**
+     * @test
+     *
+     * 0 = E164, 1 = International, 2 = National, 3 = RFC3966
+     *
+     * @param string|null $number
+     * @param string      $country
+     * @param int         $format
+     * @param string|null $expected
+     *
+     * @see PhoneNumberFormat
+     *
+     * @testWith ["5551112222",       "US", 0, "+15551112222"]
+     *           ["5551112222",       "US", 1, "+1 555-111-2222"]
+     *           ["5551112222",       "US", 2, "(555) 111-2222"]
+     *           ["5551112222",       "US", 3, "tel:+1-555-111-2222"]
+     *           ["5551112222EXT123", "US", 3, "tel:+1-555-111-2222;ext=123"]
+     *           ["4930901820",       "DE", 0, "+4930901820"]
+     *           ["4930901820",       "DE", 1, "+49 30 901820"]
+     *           ["4930901820",       "DE", 2, "030 901820"]
+     *           ["4930901820",       "DE", 3, "tel:+49-30-901820"]
+     */
+    public function format_phone_with_format(?string $number, string $country, int $format, ?string $expected)
+    {
+        $this->assertSame($expected, format_phone($number, $country, $format));
     }
 
     /**
