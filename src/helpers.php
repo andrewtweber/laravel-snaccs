@@ -5,6 +5,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
 use Snaccs\Models\Job;
 use Snaccs\Services\System;
 
@@ -135,11 +138,15 @@ if (! function_exists('format_money')) {
 
         // String replacements
         $replacements = [
-            ($price_in_cents < 0 ? config('formatting.money.negative_prefix') : config('formatting.money.positive_prefix')),
+            ($price_in_cents < 0 ? config('formatting.money.negative_prefix') : config(
+                'formatting.money.positive_prefix'
+            )),
             $show_currency ? config('formatting.money.currency_prefix') : '',
             abs($price_in_cents / $cents_per_dollar),
             $show_currency ? config('formatting.money.currency_suffix') : '',
-            ($price_in_cents < 0 ? config('formatting.money.negative_suffix') : config('formatting.money.positive_suffix')),
+            ($price_in_cents < 0 ? config('formatting.money.negative_suffix') : config(
+                'formatting.money.positive_suffix'
+            )),
         ];
 
         return sprintf("%s%s%01.{$places}f%s%s", ...$replacements);
@@ -151,13 +158,12 @@ if (! function_exists('format_phone')) {
      * Display a phone number nicely
      *
      * @param string|null $number
-     * @param string|null $country
+     * @param string|null $country_code
      *
      * @return string|null
-     * @todo if it's an alphabetical phone number, don't break it into pieces
-     *
+     * @throws NumberParseException
      */
-    #[Pure] function format_phone(?string $number, string $country = null): ?string
+    function format_phone(?string $number, ?string $country_code = null): ?string
     {
         if ($number === null) {
             return null;
@@ -169,67 +175,16 @@ if (! function_exists('format_phone')) {
             return '';
         }
 
-        // If country is not provided, try to determine by the length of the number
-        if ($country === null) {
-            if (strlen($number) == 10) {
-                $country = 'US';
-            } elseif (strlen($number) == 11 && substr($number, 0, 1) == 1) {
-                $country = 'US';
-            }
+        $phoneUtil = PhoneNumberUtil::getInstance();
+        $number = $phoneUtil->parse($number, $country_code ?? 'US');
+
+        // national format for US and CA
+        if ($number->getCountryCode() == 1) {
+            return $phoneUtil->format($number, PhoneNumberFormat::NATIONAL);
         }
 
-        $extension = null;
-        $format = false;
-
-        switch ($country) {
-            case 'US':
-            case 'CA':
-                if (substr($number, 0, 1) == '1') {
-                    $number = substr($number, 1);
-                }
-
-                if (Str::contains($number, 'EXT')) {
-                    $parts = explode('EXT', $number);
-                    $extension = array_pop($parts);
-                    $number = implode('', $parts);
-                }
-
-                $format = config('formatting.phone.locales.US');
-                break;
-
-            case 'DE':
-                $format = config('formatting.phone.locales.DE');
-                break;
-
-            case 'PL':
-                $format = config('formatting.phone.locales.PL');
-                break;
-        }
-
-        if ($format) {
-            $start = 0;
-            $formatted = '';
-
-            for ($i = 0; $i < strlen($format); ++$i) {
-                if ($format[$i] == 'Y') {
-                    $formatted .= substr($number, $start);
-                    break;
-                } elseif ($format[$i] == 'X') {
-                    $formatted .= substr($number, $start, 1);
-                    ++$start;
-                } else {
-                    $formatted .= $format[$i];
-                }
-            }
-
-            if ($extension) {
-                $formatted .= config('formatting.phone.extension_separator') . $extension;
-            }
-
-            return $formatted;
-        }
-
-        return $number;
+        // international format for other countries
+        return $phoneUtil->format($number, PhoneNumberFormat::INTERNATIONAL);
     }
 }
 
@@ -327,22 +282,39 @@ if (! function_exists('parse_handle')) {
 if (! function_exists('parse_phone')) {
     /**
      * @param string|null $value
+     * @param string|null $country_code
+     * @param bool        $throw
      *
      * @return string|null
      */
-    #[Pure] function parse_phone(?string $value): ?string
+    #[Pure] function parse_phone(?string $value, ?string $country_code = null, bool $throw = false): ?string
     {
         if ($value === null) {
             return null;
         }
 
-        $value = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
+        $phoneUtil = PhoneNumberUtil::getInstance();
+        try {
+            $number = $phoneUtil->parse($value, $country_code ?? 'US');
 
-        if (strlen($value) == 11 && substr($value, 0, 1) == 1) {
-            $value = substr($value, 1);
+            $e164 = $phoneUtil->format($number, PhoneNumberFormat::E164);
+
+            // strip +1 for US and CA
+            if ($number->getCountryCode() == 1) {
+                return substr($e164, 2);
+            }
+
+            // strip + sign for other countries
+            return ltrim($e164, '+');
+        } catch (NumberParseException $e) {
+            $value = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
+
+            if (strlen($value) == 11 && substr($value, 0, 1) == 1) {
+                $value = substr($value, 1);
+            }
+
+            return $value;
         }
-
-        return $value;
     }
 }
 

@@ -3,6 +3,9 @@
 namespace Snaccs\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use Snaccs\Models\Interfaces\PhoneNumberable;
 
 /**
  * Class PhoneNumber
@@ -12,42 +15,40 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 class PhoneNumber implements CastsAttributes
 {
     /**
-     * PhoneNumber constructor.
-     *
-     * @param string|null $country
-     */
-    public function __construct(
-        public ?string $country = null
-    ) {
-    }
-
-    /**
      * Cast the given value.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param string                              $key
-     * @param string                              $value
-     * @param array                               $attributes
+     * @param Model  $model
+     * @param string $key
+     * @param string $value
+     * @param array  $attributes
      *
      * @return string
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return format_phone($value, $this->country);
+        if (! $model instanceof PhoneNumberable) {
+            throw new InvalidArgumentException($model::class . ' must implement PhoneNumberable');
+        }
+
+        return format_phone($value, $model->getCountryCode());
     }
 
     /**
      * Prepare the given value for storage.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param string                              $key
-     * @param string                              $value
-     * @param array                               $attributes
+     * @param Model  $model
+     * @param string $key
+     * @param string $value
+     * @param array  $attributes
      *
      * @return string
      */
     public function set($model, string $key, $value, array $attributes)
     {
-        return parse_phone($value);
+        if (! $model instanceof PhoneNumberable) {
+            throw new InvalidArgumentException($model::class . ' must implement PhoneNumberable');
+        }
+
+        return parse_phone($value, $model->getCountryCode());
     }
 }

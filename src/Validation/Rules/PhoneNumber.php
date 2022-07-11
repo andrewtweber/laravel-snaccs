@@ -3,6 +3,8 @@
 namespace Snaccs\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberUtil;
 
 /**
  * Class PhoneNumber
@@ -14,10 +16,10 @@ class PhoneNumber implements Rule
     /**
      * PhoneNumber constructor.
      *
-     * @param string|null $country
+     * @param string|null $country_code
      */
     public function __construct(
-        public ?string $country = null
+        public ?string $country_code = null
     ) {
     }
 
@@ -37,15 +39,21 @@ class PhoneNumber implements Rule
             return true;
         }
 
-        // Strips extra characters out
-        // Also removes the `1` country code if US/CA
-        $value = parse_phone($value);
+        try {
+            // TODO: this is similar to `parse_phone`
+            $phoneUtil = PhoneNumberUtil::getInstance();
+            $number = $phoneUtil->parse($value, $this->country_code ?? 'US');
 
-        if (in_array($this->country, [null, 'CA', 'US'])) {
-            return strlen($value) === 10;
+            $value = parse_phone($value, $this->country_code);
+
+            if ($number->getCountryCode() == 1) {
+                return strlen($value) === 10;
+            }
+
+            return strlen($value) >= 7 && strlen($value) <= 15;
+        } catch (NumberParseException $e) {
+            return false;
         }
-
-        return strlen($value) >= 7 && strlen($value) <= 15;
     }
 
     /**
@@ -55,10 +63,10 @@ class PhoneNumber implements Rule
      */
     public function message()
     {
-        if ($this->country) {
+        if ($this->country_code) {
             return trans()->has('validation.phone_with_country')
-                ? trans('validation.phone_with_country', ['country' => $this->country])
-                : 'The :attribute field is not a valid ' . $this->country . ' phone number.';
+                ? trans('validation.phone_with_country', ['country' => $this->country_code])
+                : 'The :attribute field is not a valid ' . $this->country_code . ' phone number.';
         }
 
         return trans()->has('validation.phone')

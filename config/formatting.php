@@ -25,26 +25,6 @@ return [
     ],
 
     /**
-     * Phone number formatting
-     */
-    'phone' => [
-
-        'locales' => [
-
-            // US / Canada
-            'US' => env('PHONE_FORMAT_US', '(XXX) XXX-YYYY'),
-
-            // Other countries
-            'DE' => '+XX XXXX YYYYY',
-            'PL' => '+XX XX XXX XX YY',
-
-        ],
-
-        'extension_separator' => ' ext ',
-
-    ],
-
-    /**
      * Byte formatting suffixes
      */
     'bytes' => [

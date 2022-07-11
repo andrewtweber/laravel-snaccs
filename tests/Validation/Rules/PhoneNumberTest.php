@@ -46,9 +46,9 @@ class PhoneNumberTest extends LaravelTestCase
      * @param string      $country
      *
      * @testWith ["1234567", "DE"]
-     *           ["123456789", "DE"]
-     *           ["01234567890", "DE"]
-     *           ["123456789012345", "DE"]
+     *           ["493456789", "DE"]
+     *           ["04934567890", "DE"]
+     *           ["493456789012345", "DE"]
      */
     public function passes_with_country(?string $number, string $country)
     {
@@ -81,8 +81,8 @@ class PhoneNumberTest extends LaravelTestCase
      * @param string      $country
      *
      * @testWith ["asdf", "DE"]
-     *           ["123456", "DE"]
-     *           ["1234567890123456", "DE"]
+     *           ["4934", "DE"]
+     *           ["4934567890123456", "DE"]
      */
     public function fails_with_country(?string $number, string $country)
     {

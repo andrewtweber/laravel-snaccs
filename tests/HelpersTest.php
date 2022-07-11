@@ -163,14 +163,42 @@ class HelpersTest extends TestCase
      *           ["1-555-111-2222",   "5551112222"]
      *           ["555.111.2222",     "5551112222"]
      *           ["555-111-2222",     "5551112222"]
-     *           ["555-stanley",      "555STANLEY"]
-     *           ["555-STANLEY",      "555STANLEY"]
+     *           ["555-stanley",      "5557826539"]
+     *           ["555-STANLEY",      "5557826539"]
      *           ["555 111 2222",     "5551112222"]
      *           ["(555) 111-2222",   "5551112222"]
      *           [" 1-555-111-2222 ", "5551112222"]
      *           [" 555-111-2222 ",   "5551112222"]
      */
     public function parse_phone(?string $number, ?string $expected)
+    {
+        $this->assertSame($expected, parse_phone($number));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $number
+     * @param string|null $country
+     * @param string|null $expected
+     *
+     * @testWith [null,               "US", null]
+     *           ["",                 "US", ""]
+     *           ["1-555-111-2222",   "US", "5551112222"]
+     *           ["555.111.2222",     "US", "5551112222"]
+     *           ["555-111-2222",     "US", "5551112222"]
+     *           ["555-stanley",      "US", "5557826539"]
+     *           ["555-STANLEY",      "US", "5557826539"]
+     *           ["555 111 2222",     "US", "5551112222"]
+     *           ["(555) 111-2222",   "US", "5551112222"]
+     *           [" 1-555-111-2222 ", "US", "5551112222"]
+     *           ["1-555-111-2222",   null, "5551112222"]
+     *           ["555-111-2222",     null, "5551112222"]
+     *           [" 555-111-2222 ",   "US", "5551112222"]
+     *           ["+49 30 901820",    "DE", "4930901820"]
+     *           ["+49 1522 3433333", "DE", "4915223433333"]
+     */
+    public function parse_phone_with_country(?string $number, ?string $country_code, ?string $expected)
     {
         $this->assertSame($expected, parse_phone($number));
     }
