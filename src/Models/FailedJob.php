@@ -39,7 +39,7 @@ class FailedJob extends Model
      */
     public function getExceptionAttribute($value)
     {
-        [$value, ] = explode('Stack trace:', $value);
+        [$value,] = explode('Stack trace:', $value);
 
         return new HtmlString(nl2br($value));
     }

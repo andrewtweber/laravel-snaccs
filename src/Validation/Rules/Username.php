@@ -75,7 +75,7 @@ class Username implements Rule
             $this->message = "The username must be {$config['min']} or more characters.";
 
             return false;
-        } else if (strlen($value) > $config['max']) {
+        } elseif (strlen($value) > $config['max']) {
             $this->message = "The username must be {$config['max']} or fewer characters.";
 
             return false;

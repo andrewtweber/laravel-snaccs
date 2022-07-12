@@ -12,9 +12,13 @@ use Illuminate\Contracts\Validation\Rule;
 class Handle implements Rule
 {
     protected string $label;
+
     protected string $allowed_special_chars;
+
     protected int $min;
+
     protected int $max;
+
     protected array $allowed_domains = [];
 
     /**

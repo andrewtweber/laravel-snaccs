@@ -1,4 +1,6 @@
-<?php namespace Snaccs\Builders;
+<?php
+
+namespace Snaccs\Builders;
 
 use Elasticquent\ElasticquentInterface;
 use Illuminate\Contracts\Auth\Authenticatable;

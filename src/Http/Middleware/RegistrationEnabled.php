@@ -15,7 +15,7 @@ class RegistrationEnabled
 {
     /**
      * @param Request $request
-     * @param Closure                  $next
+     * @param Closure $next
      *
      * @return mixed
      * @throws RegistrationDisabledException

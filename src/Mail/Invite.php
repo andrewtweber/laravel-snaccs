@@ -41,7 +41,7 @@ class Invite extends Attachment implements Arrayable
         if ($minutes % 1440 === 0) {
             $days = $minutes / 1440;
             $trigger = "-P{$days}D";
-        } else if ($minutes % 60 === 0) {
+        } elseif ($minutes % 60 === 0) {
             $hours = $minutes / 60;
             $trigger = "-PT{$hours}H";
         }
