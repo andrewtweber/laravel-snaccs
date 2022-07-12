@@ -115,12 +115,12 @@ format_money(-200); // "(€2.00)"
 format_money(100); // "$1"
 format_money(101); // "$1.01"
 
-// Format phone with defaults
+// Format phone
 format_phone("5551112222"); // "(555) 111-2222"
-format_phone("4930901820", "DE"); // "+49 3090 1820"
+format_phone("4930901820", "DE"); // "+49 30 901820"
 
-// With config override US locale string set to "XXX.XXX.YYYY"
-format_phone("5551112222"); // "555.111.2222"
+// Format phone as clickable URL
+format_phone("5551112222EXT123", "US", PhoneNumberFormat::RFC3966); // "tel:+1-555-111-2222;ext=123"
 
 // Format bytes (precision defaults to 2)
 format_bytes(-100); // RuntimeException
@@ -182,14 +182,25 @@ Usage:
 use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\PhoneNumber;
 use Snaccs\Casts\Website;
+use Snaccs\Models\Interfaces\PhoneNumberable;
 
-class Account extends Model
+class Account extends Model implements PhoneNumberable
 {
     protected $casts = [
         'phone' => PhoneNumber::class,
-        'phone_de' => PhoneNumber::class . ':DE',
         'website' => Website::class,
     ];
+
+    /**
+     * The phone number cast requires implementing the PhoneNumberable
+     * interface which has this sole method. It should return the 2-letter
+     * (ISO 3166-2) country code. You could hard code it to 'US', return
+     * a database column, etc. Null value defaults to 'US'.
+     */
+    public function getCountryCode(): string
+    {
+        return $this->country;
+    }
 }
 
 // Examples:
@@ -228,9 +239,14 @@ $rules = [
     'phone' => ['required', new PhoneNumber()],
 ];
 
-// Must be between 7-15 digits.
+// Must be a valid German phone number.
 $rules = [
     'phone' => [new PhoneNumber('DE')],
+];
+
+// If the country is also set in the request, you can do something like
+$rules = [
+    'phone' => [new PhoneNumber($this->get('country'))],
 ];
 ```
 
