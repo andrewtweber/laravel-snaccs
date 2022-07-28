@@ -226,7 +226,7 @@ class FormattingTest extends LaravelTestCase
      *           ["5551112222",    null, "(555) 111-2222"]
      *           ["15551112222",   null, "(555) 111-2222"]
      *           ["4930901820",    "DE", "+49 30 901820"]
-     *           ["4915223433333", "DE", "+49 1522 3433333"]
+     *           ["4915223433333", "DE", "+49 491 5223433333"]
      */
     public function format_phone_with_country(?string $number, ?string $country, ?string $expected)
     {

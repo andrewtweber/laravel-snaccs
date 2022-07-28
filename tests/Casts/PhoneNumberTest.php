@@ -59,7 +59,7 @@ class PhoneNumberTest extends LaravelTestCase
      *           ["5551112222",       null, "(555) 111-2222"]
      *           ["15551112222",      null, "(555) 111-2222"]
      *           ["4930901820",       "DE", "+49 30 901820"]
-     *           ["4915223433333",    "DE", "+49 1522 3433333"]
+     *           ["4915223433333",    "DE", "+49 491 5223433333"]
      *           ["5551112222EXT123", "US", "(555) 111-2222 ext. 123"]
      */
     public function get_value_with_country(?string $number, ?string $country_code, ?string $expected)
