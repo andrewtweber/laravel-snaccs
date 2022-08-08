@@ -82,6 +82,32 @@ if (! function_exists('dispatch_with_delay')) {
     }
 }
 
+if (! function_exists('comma_separated')) {
+    /**
+     * @param string[] $items
+     *
+     * @return string|null
+     */
+    #[Pure] function comma_separated(array $items): ?string
+    {
+        if (count($items) === 0) {
+            return null;
+        }
+
+        if (count($items) === 1) {
+            return $items[0];
+        }
+
+        if (count($items) === 2) {
+            return $items[0] . ' and ' . $items[1];
+        }
+
+        $last = array_pop($items);
+
+        return implode(', ', $items) . ', and ' . $last;
+    }
+}
+
 if (! function_exists('format_bytes')) {
     /**
      * Convert bytes to kb, MB, etc.

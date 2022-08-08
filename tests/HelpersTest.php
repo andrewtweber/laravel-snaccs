@@ -38,6 +38,23 @@ class HelpersTest extends TestCase
     /**
      * @test
      *
+     * @param array       $items
+     * @param string|null $expected
+     *
+     * @testWith [[], null]
+     *           [["lions"], "lions"]
+     *           [["lions", "tigers"], "lions and tigers"]
+     *           [["lions", "tigers", "bears"], "lions, tigers, and bears"]
+     *           [["lions", "tigers", "bears", "oh my!"], "lions, tigers, bears, and oh my!"]
+     */
+    public function comma_separated(array $items, ?string $expected)
+    {
+        $this->assertSame($expected, comma_separated($items));
+    }
+
+    /**
+     * @test
+     *
      * @param int|null    $input
      * @param string|null $expected
      *

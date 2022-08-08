@@ -152,6 +152,11 @@ dispatch_with_delay($job); // Defaults to 15 seconds between jobs
 dispatch_with_delay($job, 60); // Wait 1 minute for first job, and 1 minute between jobs
 dispatch_with_delay($job, 60, 600); // Wait 10 minutes for first job, then 1 minute between jobs
 
+// Comma-separated
+comma_separated(["lions"]); // "lions"
+comma_separated(["lions", "tigers"]); // "lions and tigers"
+comma_separated(["lions", "tigers", "bears"]); // "lions, tigers, and bears"
+
 // Ordinal
 ordinal(1); // "1st"
 ordinal(2); // "2nd"
