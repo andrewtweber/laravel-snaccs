@@ -41,6 +41,6 @@ class FailedJob extends Model
     {
         [$value,] = explode('Stack trace:', $value);
 
-        return new HtmlString(nl2br($value));
+        return new HtmlString(nl2br(e($value)));
     }
 }
