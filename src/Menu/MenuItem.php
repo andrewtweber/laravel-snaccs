@@ -18,7 +18,7 @@ class MenuItem
 
     public bool $condensed = false;
 
-    public ?MenuBadge $badge;
+    public ?MenuBadge $badge = null;
 
     /**
      * MenuItem constructor.
