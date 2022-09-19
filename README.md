@@ -1,6 +1,6 @@
 # Laravel Snaccs
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/andrewtweber/laravel-snaccs/tree/master.svg?style=shield&circle-token=e5f0e9e92179f878d1c31997dfff43dd7054437d)](https://dl.circleci.com/status-badge/redirect/gh/andrewtweber/laravel-snaccs/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/andrewtweber/laravel-snaccs/tree/master.svg?style=shield&circle-token=c18ef225f399c42f4f082abfe30379846900b1ec)](https://dl.circleci.com/status-badge/redirect/gh/andrewtweber/laravel-snaccs/tree/master)
 
 ## About
 
