@@ -18,10 +18,14 @@ use Snaccs\Support\JsonString;
 class BreadcrumbCollection extends Collection implements Arrayable
 {
     /**
-     * @return HtmlString
+     * @return HtmlString|null
      */
-    public function toListHtml(): HtmlString
+    public function toListHtml(): ?HtmlString
     {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
         $html = view('snaccs::breadcrumbs.list')
             ->with('breadcrumbs', $this)
             ->render();
@@ -30,10 +34,14 @@ class BreadcrumbCollection extends Collection implements Arrayable
     }
 
     /**
-     * @return HtmlString
+     * @return HtmlString|null
      */
-    public function toHtml(): HtmlString
+    public function toHtml(): ?HtmlString
     {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
         return (new JsonString($this->toArray()))->toScriptTag();
     }
 
