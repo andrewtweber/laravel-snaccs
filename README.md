@@ -479,6 +479,9 @@ Mail::send(Mailable::class)->attach($invite);
 
 ## Misc
 
+
+### Mobile / Desktop switching
+
 Of course, responsive design is ideal, but in some cases your mobile site really does
 need to look or behave differently. This package makes it easy to switch between mobile
 and desktop for debugging purposes.
@@ -524,6 +527,32 @@ Finally, you might want to add some quick links to toggle. For example in a blad
         <a href="?mobile">Mobile</a>
     @endif
 </footer>
+```
+
+### Breadcrumbs
+
+Use the `BreadcrumbCollection` and `Breadcrumb` classes to easily generate both HTML and LD+Json
+breadcrumbs (for SEO).
+
+```php
+use Snaccs\Breadcrumbs\Breadcrumb;
+use Snaccs\Breadcrumbs\BreadcrumbCollection;
+
+class Company extends Model {
+    public function breadcrumbs(): BreadcrumbCollection {
+        $crumbs = [];
+        $crumbs[] = new Breadcrumb('/companies', 'All Companies');
+        $crumbs[] = new Breadcrumb($this->url, $this->name);
+        return new BreadcrumbCollection($crumbs);
+    }
+}
+```
+
+Render it as HTML or as a script tag
+
+```blade
+{{ $company->breadcrumbs()->toListHtml() }}
+{{ $company->breadcrumbs()->toHtml() }}
 ```
 
 ## Todo
