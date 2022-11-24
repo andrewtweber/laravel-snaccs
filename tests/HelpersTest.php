@@ -3,6 +3,7 @@
 namespace Snaccs\Tests;
 
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use libphonenumber\NumberParseException;
 use Snaccs\Models\Job;
 use Snaccs\Models\SerializedJob;
 
@@ -173,10 +174,7 @@ class HelpersTest extends TestCase
      * @param string|null $expected
      *
      * @testWith [null,                     null]
-     *           ["",                       ""]
-     *           ["   ",                    ""]
-     *           ["---",                    ""]
-     *           ["-.-(-.-)-.-",            ""]
+     *           ["",                       null]
      *           ["1-555-111-2222",         "5551112222"]
      *           ["555.111.2222",           "5551112222"]
      *           ["555-111-2222",           "5551112222"]
@@ -201,7 +199,7 @@ class HelpersTest extends TestCase
      * @param string|null $expected
      *
      * @testWith [null,               "US", null]
-     *           ["",                 "US", ""]
+     *           ["",                 "US", null]
      *           ["1-555-111-2222",   "US", "5551112222"]
      *           ["555.111.2222",     "US", "5551112222"]
      *           ["555-111-2222",     "US", "5551112222"]
@@ -218,7 +216,23 @@ class HelpersTest extends TestCase
      */
     public function parse_phone_with_country(?string $number, ?string $country_code, ?string $expected)
     {
-        $this->assertSame($expected, parse_phone($number));
+        $this->assertSame($expected, parse_phone($number, $country_code));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $number
+     *
+     * @testWith ["   "]
+     *           ["---"]
+     *           ["-.-(-.-)-.-"]
+     *           ["555-111-2222 ext 12 or 15"]
+     */
+    public function parse_invalid_phone(?string $number)
+    {
+        $this->expectException(NumberParseException::class);
+        parse_phone($number);
     }
 
     /**

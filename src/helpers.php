@@ -192,14 +192,8 @@ if (! function_exists('format_phone')) {
      */
     function format_phone(?string $number, ?string $country_code = null, ?int $format = null): ?string
     {
-        if ($number === null) {
+        if ($number === null || $number === '') {
             return null;
-        }
-
-        $number = preg_replace('/[^0-9A-Z]/', '', strtoupper($number));
-
-        if (! $number) {
-            return '';
         }
 
         $phoneUtil = PhoneNumberUtil::getInstance();
@@ -312,43 +306,28 @@ if (! function_exists('parse_phone')) {
      * @param string|null $country_code
      *
      * @return string|null
+     * @throws NumberParseException
      */
     #[Pure] function parse_phone(?string $value, ?string $country_code = null): ?string
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
         $phoneUtil = PhoneNumberUtil::getInstance();
-        try {
-            $number = $phoneUtil->parse($value, $country_code ?? 'US');
 
-            $e164 = $phoneUtil->format($number, PhoneNumberFormat::E164);
+        $number = $phoneUtil->parse($value, $country_code ?? 'US');
 
-            // strip +1 for US and CA
-            if ($number->getCountryCode() == 1) {
-                return substr($e164, 2)
-                    . ($number->hasExtension() ? 'EXT' . $number->getExtension() : '');
-            }
+        $e164 = $phoneUtil->format($number, PhoneNumberFormat::E164);
 
-            // strip + sign for other countries
-            return ltrim($e164, '+');
-        } catch (NumberParseException $e) {
-            $number = preg_replace('/[^0-9A-Z]/', '', strtoupper($value));
-            $extension = null;
-
-            if (Str::contains($number, 'EXT')) {
-                $parts = explode('EXT', $number);
-                $extension = array_pop($parts);
-                $number = implode('', $parts);
-            }
-
-            if (strlen($number) == 11 && substr($number, 0, 1) == 1) {
-                $number = substr($number, 1);
-            }
-
-            return $number . ($extension ? 'EXT' . $extension : '');
+        // strip +1 for US and CA
+        if ($number->getCountryCode() == 1) {
+            return substr($e164, 2)
+                . ($number->hasExtension() ? 'EXT' . $number->getExtension() : '');
         }
+
+        // strip + sign for other countries
+        return ltrim($e164, '+');
     }
 }
 

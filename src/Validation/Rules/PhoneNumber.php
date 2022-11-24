@@ -40,17 +40,15 @@ class PhoneNumber implements Rule
         }
 
         try {
-            // TODO: this is similar to `parse_phone`
-            $phoneUtil = PhoneNumberUtil::getInstance();
-            $phoneUtil->parse($value, $this->country_code ?? 'US');
-
             $value = parse_phone($value, $this->country_code);
+            $parts = explode('EXT', $value);
+            $number = $parts[0];
 
             if (in_array($this->country_code, [null, 'CA', 'US'])) {
-                return strlen($value) === 10;
+                return strlen($number) === 10;
             }
 
-            return strlen($value) >= 7 && strlen($value) <= 15;
+            return strlen($number) >= 7 && strlen($number) <= 15;
         } catch (NumberParseException $e) {
             return false;
         }

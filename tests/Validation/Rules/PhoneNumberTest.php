@@ -31,6 +31,8 @@ class PhoneNumberTest extends LaravelTestCase
      *           ["1-555-STANLEY"]
      *           ["(555) STANLEY"]
      *           [" 555STANLEY "]
+     *           ["555-111-2222 ext. 123"]
+     *           ["(555) 111-2222 EXT 123"]
      */
     public function passes(?string $number)
     {
@@ -52,6 +54,8 @@ class PhoneNumberTest extends LaravelTestCase
      *           ["493456789", "DE"]
      *           ["04934567890", "DE"]
      *           ["493456789012345", "DE"]
+     *           ["555-111-2222 ext. 123", "US"]
+     *           ["(555) 111-2222 EXT 123", "US"]
      */
     public function passes_with_country(?string $number, string $country_code)
     {

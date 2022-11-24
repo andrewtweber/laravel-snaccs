@@ -2,6 +2,7 @@
 
 namespace Snaccs\Tests\Casts;
 
+use libphonenumber\NumberParseException;
 use Snaccs\Casts\PhoneNumber;
 use Snaccs\Tests\LaravelTestCase;
 use Snaccs\Tests\TestModel;
@@ -20,9 +21,7 @@ class PhoneNumberTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,               null]
-     *           ["",                 ""]
-     *           ["   ",              ""]
-     *           ["---",              ""]
+     *           ["",                 null]
      *           ["15551112222",      "(555) 111-2222"]
      *           ["5551112222",       "(555) 111-2222"]
      *           ["555stanley",       "(555) 782-6539"]
@@ -75,12 +74,29 @@ class PhoneNumberTest extends LaravelTestCase
      * @test
      *
      * @param string|null $number
+     *
+     * @testWith ["   "]
+     *           ["---"]
+     *           ["5551112222EXT123OR45"]
+     */
+    public function get_invalid_value(?string $number)
+    {
+        $this->expectException(NumberParseException::class);
+
+        $cast = new PhoneNumber();
+        $model = new TestModel();
+
+        $cast->get($model, "", $number, []);
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $number
      * @param string|null $expected
      *
      * @testWith [null,                     null]
-     *           ["",                       ""]
-     *           ["   ",                    ""]
-     *           ["---",                    ""]
+     *           ["",                       null]
      *           ["1-555-111-2222",         "5551112222"]
      *           ["555.111.2222",           "5551112222"]
      *           ["555-111-2222",           "5551112222"]
@@ -90,6 +106,7 @@ class PhoneNumberTest extends LaravelTestCase
      *           ["(555) 111-2222",         "5551112222"]
      *           [" 1-555-111-2222 ",       "5551112222"]
      *           [" 555-111-2222 ",         "5551112222"]
+     *           ["555-111-2222 ext. 123",  "5551112222EXT123"]
      *           ["(555) 111-2222 EXT 123", "5551112222EXT123"]
      */
     public function set_value(?string $number, ?string $expected)
@@ -108,7 +125,7 @@ class PhoneNumberTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,                     "US", null]
-     *           ["",                       "US", ""]
+     *           ["",                       "US", null]
      *           ["1-555-111-2222",         "US", "5551112222"]
      *           ["555.111.2222",           "US", "5551112222"]
      *           ["555-111-2222",           "US", "5551112222"]
@@ -122,6 +139,7 @@ class PhoneNumberTest extends LaravelTestCase
      *           [" 555-111-2222 ",         "US", "5551112222"]
      *           ["+49 30 901820",          "DE", "4930901820"]
      *           ["+49 1522 3433333",       "DE", "4915223433333"]
+     *           ["555-111-2222 ext. 123",  "US", "5551112222EXT123"]
      *           ["(555) 111-2222 EXT 123", "US", "5551112222EXT123"]
      */
     public function set_value_with_country(?string $number, ?string $country_code, ?string $expected)
@@ -131,5 +149,25 @@ class PhoneNumberTest extends LaravelTestCase
         $model->setCountryCode($country_code);
 
         $this->assertSame($expected, $cast->set($model, "", $number, []));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $number
+     * @param string|null $expected
+     *
+     * @testWith ["   "]
+     *           ["---"]
+     *           ["555-111-2222 ext 123 or 45"]
+     */
+    public function set_invalid_value(?string $number)
+    {
+        $this->expectException(NumberParseException::class);
+
+        $cast = new PhoneNumber();
+        $model = new TestModel();
+
+        $cast->set($model, "", $number, []);
     }
 }

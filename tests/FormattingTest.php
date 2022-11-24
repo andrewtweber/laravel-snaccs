@@ -3,6 +3,7 @@
 namespace Snaccs\Tests;
 
 use Illuminate\Support\Facades\Config;
+use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
 
 /**
@@ -191,9 +192,7 @@ class FormattingTest extends LaravelTestCase
      * @param string|null $expected
      *
      * @testWith [null,            null]
-     *           ["",              ""]
-     *           ["   ",           ""]
-     *           ["---",           ""]
+     *           ["",              null]
      *           ["15551112222",   "(555) 111-2222"]
      *           ["5551112222",    "(555) 111-2222"]
      *           ["555stanley",    "(555) 782-6539"]
@@ -258,6 +257,22 @@ class FormattingTest extends LaravelTestCase
     public function format_phone_with_format(?string $number, string $country, int $format, ?string $expected)
     {
         $this->assertSame($expected, format_phone($number, $country, $format));
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $number
+     *
+     * @testWith ["   "]
+     *           ["---"]
+     *           ["5551112222EXT123OR45"]
+     */
+    public function format_invalid_phone(?string $number)
+    {
+        $this->expectException(NumberParseException::class);
+
+        format_phone($number);
     }
 
     /**
