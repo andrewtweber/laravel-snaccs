@@ -3,6 +3,7 @@
 namespace Snaccs\Menu;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 
 /**
  * Class MenuItem
@@ -23,14 +24,14 @@ class MenuItem
     /**
      * MenuItem constructor.
      *
-     * @param string      $label
-     * @param string|null $url
-     * @param string|null $section
-     * @param string|null $icon
-     * @param mixed       $permission
+     * @param HtmlString|string $label
+     * @param string|null       $url
+     * @param string|null       $section
+     * @param string|null       $icon
+     * @param mixed             $permission
      */
     public function __construct(
-        public string $label,
+        public HtmlString|string $label,
         public ?string $url,
         public ?string $section = null,
         public ?string $icon = null,
