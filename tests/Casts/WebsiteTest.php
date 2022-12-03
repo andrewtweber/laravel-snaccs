@@ -3,6 +3,7 @@
 namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\Website;
+use Snaccs\Support\Url;
 use Snaccs\Tests\TestCase;
 
 /**
@@ -15,7 +16,32 @@ class WebsiteTest extends TestCase
     /**
      * @test
      *
-     * @param string|null $number
+     * @param string|null $value
+     * @param string|null $expected
+     *
+     * @testWith [null,             null]
+     *           ["",               ""]
+     *           ["http://",        "http://"]
+     *           ["www.google.com", "www.google.com"]
+     */
+    public function get_value(?string $value, ?string $expected)
+    {
+        $cast = new Website();
+
+        $result = $cast->get(null, "", $value, []);
+
+        if ($value === null) {
+            $this->assertNull($result);
+        } else {
+            $this->assertTrue($result instanceof Url);
+            $this->assertSame($expected, (string)$result);
+        }
+    }
+
+    /**
+     * @test
+     *
+     * @param string|null $url
      * @param string|null $expected
      *
      * @testWith [null,                    null]
@@ -31,10 +57,10 @@ class WebsiteTest extends TestCase
      *           [" http://example.com ",  "http://example.com"]
      *           [" https://example.com ", "https://example.com"]
      */
-    public function set_value(?string $number, ?string $expected)
+    public function set_value(?string $url, ?string $expected)
     {
         $cast = new Website();
 
-        $this->assertSame($expected, $cast->set(null, "", $number, []));
+        $this->assertSame($expected, $cast->set(null, "", $url, []));
     }
 }
