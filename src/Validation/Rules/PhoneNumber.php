@@ -4,7 +4,6 @@ namespace Snaccs\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use libphonenumber\NumberParseException;
-use libphonenumber\PhoneNumberUtil;
 
 /**
  * Class PhoneNumber

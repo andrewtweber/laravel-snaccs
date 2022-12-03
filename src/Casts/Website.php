@@ -2,7 +2,7 @@
 
 namespace Snaccs\Casts;
 
-use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Snaccs\Support\Url;
 
@@ -11,7 +11,7 @@ use Snaccs\Support\Url;
  *
  * @package Snaccs\Casts
  */
-class Website implements CastsInboundAttributes
+class Website implements CastsAttributes
 {
     /**
      * @param Model       $model
