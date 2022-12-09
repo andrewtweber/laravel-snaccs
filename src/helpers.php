@@ -354,3 +354,29 @@ if (! function_exists('parse_website')) {
         return $value;
     }
 }
+
+if (! function_exists('strip_articles')) {
+    /**
+     * This can be used e.g. if you want to sort book titles ignoring articles.
+     *
+     * @param string|null $string
+     * @param array       $articles
+     *
+     * @return string|null
+     */
+    function strip_articles(?string $string, array $articles = ['the', 'a', 'an']): ?string
+    {
+        if ($string === null) {
+            return null;
+        }
+
+        $lower = strtolower($string);
+        foreach ($articles as $article) {
+            if (str_starts_with($lower, strtolower($article) . ' ')) {
+                return substr($string, strlen($article) + 1);
+            }
+        }
+
+        return $string;
+    }
+}

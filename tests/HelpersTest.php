@@ -258,4 +258,23 @@ class HelpersTest extends TestCase
     {
         $this->assertSame($expected, parse_website($website));
     }
+
+    /**
+     * @test
+     *
+     * @param string|null $input
+     * @param string|null $output
+     *
+     * @testWith [null,           null]
+     *           ["",              ""]
+     *           ["The USA",      "USA"]
+     *           ["a cat",        "cat"]
+     *           ["AN APPLE",     "APPLE"]
+     *           ["These people", "These people"]
+     *           ["apples",       "apples"]
+     */
+    public function strip_articles(?string $input, ?string $output)
+    {
+        $this->assertSame($output, strip_articles($input));
+    }
 }
