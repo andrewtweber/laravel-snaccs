@@ -8,6 +8,10 @@ use Illuminate\Support\HtmlString;
  * Class Url
  *
  * @package Snaccs\Support
+ *
+ * @property string $base_domain
+ * @property string $domain
+ * @property string $subdomain
  */
 class Url
 {
@@ -28,11 +32,29 @@ class Url
      */
     public function __get(string $name)
     {
-        if ($name === UrlAttribute::Domain->value) {
-            return parse_domain($this->url);
-        }
+        $attribute = UrlAttribute::from($name);
 
-        return null;
+        $domain = parse_domain($this->url);
+
+        switch ($attribute) {
+            case UrlAttribute::BaseDomain:
+                $parts = explode('.', $domain);
+                $base = [];
+                $base[] = array_pop($parts);
+                $base[] = array_pop($parts);
+
+                return implode('.', array_reverse($base));
+
+            case UrlAttribute::Domain:
+                return $domain;
+
+            case UrlAttribute::Subdomain:
+                $parts = explode('.', $domain);
+                array_pop($parts);
+                array_pop($parts);
+
+                return empty($parts) ? null : implode('.', $parts);
+        }
     }
 
     /**
