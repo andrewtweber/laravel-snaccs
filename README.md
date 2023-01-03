@@ -555,6 +555,19 @@ Render it as HTML or as a script tag
 {{ $company->breadcrumbs()->toHtml() }}
 ```
 
+### Coordinates
+
+Just a small helper class to deal with latitude and longitude pairs.
+
+```php
+use Snaccs\Support\Coordinates;
+
+$coords = new Coordinates(10, -20);
+(string)$coords; // "10,-20"
+
+$coords->distanceFrom(new Coordinates(12.3455, -19.223));
+```
+
 ## Todo
 
 - assets config and views
