@@ -16,42 +16,49 @@ class CoordinatesTest extends TestCase
     /**
      * @test
      */
-    public function formatters()
+    public function string_casting()
+    {
+        // String cast shows whole numbers as integers
+        $coords = new Coordinates(10, -20);
+        $this->assertSame('10,-20', (string)$coords);
+
+        // String cast trims trailing 0s in decimal places
+        $coords = new Coordinates(10.000, -20.000);
+        $this->assertSame('10,-20', (string)$coords);
+
+        // String cast trims trailing 0s in decimal places
+        $coords = new Coordinates('10.200', '-20.130');
+        $this->assertSame('10.2,-20.13', (string)$coords);
+
+        // Rounds to 6th decimal place and then truncates trailing zeroes
+        $coords = new Coordinates(100.0000001, -49.9999999);
+        $this->assertEquals("100,-50", (string)$coords);
+
+        // Rounds to 6th decimal place, nothing to truncate
+        $coords = new Coordinates(100.000001, -49.999999);
+        $this->assertEquals("100.000001,-49.999999", (string)$coords);
+
+        // Rounds down to 6 decimal points
+        $coords = new Coordinates(10.123456489, -20.123456489);
+        $this->assertSame('10.123456,-20.123456', (string)$coords);
+
+        // Rounds up to 6 decimal points
+        $coords = new Coordinates(10.123456789, -20.123456789);
+        $this->assertSame('10.123457,-20.123457', (string)$coords);
+    }
+
+    /**
+     * @test
+     */
+    public function array_conversion()
     {
         $coords = new Coordinates(10, -20);
-
-        // String cast shows whole numbers as integers
-        $this->assertSame('10,-20', (string)$coords);
         $this->assertSame([-20.0, 10.0], $coords->toPair());
         $this->assertSame(['lat' => 10.0, 'lon' => -20.0], $coords->toArray());
-
-        $coords = new Coordinates(10.000, -20.000);
-
-        // String cast trims trailing 0s in decimal places
-        $this->assertSame('10,-20', (string)$coords);
-        $this->assertSame([-20.0, 10.0], $coords->toPair());
-        $this->assertSame(['lat' => 10.0, 'lon' => -20.0], $coords->toArray());
-
-        $coords = new Coordinates('10.200', '-20.130');
-
-        // String cast trims trailing 0s in decimal places
-        $this->assertSame('10.2,-20.13', (string)$coords);
-        $this->assertSame([-20.13, 10.2], $coords->toPair());
-        $this->assertSame(['lat' => 10.2, 'lon' => -20.13], $coords->toArray());
 
         $coords = new Coordinates(10.123456489, -20.123456489);
-
-        // String cast is rounded down to 6 decimal points
-        $this->assertSame('10.123456,-20.123456', (string)$coords);
         $this->assertSame([-20.123456489, 10.123456489], $coords->toPair());
         $this->assertSame(['lat' => 10.123456489, 'lon' => -20.123456489], $coords->toArray());
-
-        $coords = new Coordinates(10.123456789, -20.123456789);
-
-        // String cast is rounded up to 6 decimal points
-        $this->assertSame('10.123457,-20.123457', (string)$coords);
-        $this->assertSame([-20.123456789, 10.123456789], $coords->toPair());
-        $this->assertSame(['lat' => 10.123456789, 'lon' => -20.123456789], $coords->toArray());
     }
 
     /**
