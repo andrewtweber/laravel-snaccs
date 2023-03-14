@@ -18,12 +18,15 @@ class FontAwesomeIcon extends Icon
     }
 
     /**
+     * @param string|null $classes
+     *
      * @return string
      */
-    public function render(): string
+    public function render(?string $classes = null): string
     {
         return view('snaccs::menu.icons.fontawesome')
             ->with('icon', $this)
+            ->with('classes', $classes)
             ->render();
     }
 }

@@ -12,15 +12,19 @@ use Illuminate\Support\HtmlString;
 abstract class Icon
 {
     /**
+     * @param string|null $classes
+     *
      * @return string
      */
-    abstract public function render(): string;
+    abstract public function render(?string $classes = null): string;
 
     /**
+     * @param string|null $classes
+     *
      * @return HtmlString
      */
-    public function html(): HtmlString
+    public function html(?string $classes = null): HtmlString
     {
-        return new HtmlString($this->render());
+        return new HtmlString($this->render($classes));
     }
 }

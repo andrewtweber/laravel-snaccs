@@ -1,1 +1,1 @@
-<i class="{{ $icon->icon }} mr-md-2"></i>
+<i class="{{ $icon->icon }} {{ $classes ?? 'mr-md-2' }}"></i>
