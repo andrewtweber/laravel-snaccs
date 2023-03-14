@@ -21,6 +21,8 @@ class MenuItem
 
     public bool $condensed = false;
 
+    public ?Icon $icon = null;
+
     public ?MenuBadge $badge = null;
 
     /**
@@ -36,14 +38,11 @@ class MenuItem
         public HtmlString|string $label,
         public ?string $url,
         public ?string $section = null,
-        public Icon|string|null $icon = null,
+        Icon|string|null $icon = null,
         public mixed $permission = null
     ) {
         $this->children = collect();
-
-        if (is_string($icon)) {
-            $this->icon = new FontAwesomeIcon($icon);
-        }
+        $this->icon = is_string($icon) ? new FontAwesomeIcon($icon) : $icon;
     }
 
     /**
