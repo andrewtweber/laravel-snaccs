@@ -7,7 +7,7 @@
     <a class="nav-link{{ $is_active ? ' active' : '' }}" id="{{ $item->url }}-tab" data-toggle="tab"
        href="#{{ $item->url }}-body" role="tab" aria-controls="{{ $item->url }}-body"
        aria-selected="{{ $is_active ? 'true' : 'false' }}">
-        <i class="{{ $item->icon }} mr-2"></i>{{ $item->label }}{{
+        {{ $item->icon?->html('mr-2') }}{{ $item->label }}{{
             isset($item->badge) ? $item->badge->html() : '' }}
     </a>
 </li>
