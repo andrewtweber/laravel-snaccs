@@ -2,6 +2,7 @@
 
 namespace Snaccs\Tests\Casts;
 
+use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\Website;
 use Snaccs\Support\Url;
 use Snaccs\Tests\TestCase;
@@ -62,5 +63,24 @@ class WebsiteTest extends TestCase
         $cast = new Website();
 
         $this->assertSame($expected, $cast->set(null, "", $url, []));
+    }
+
+    /**
+     * @test
+     */
+    public function json_serialization()
+    {
+        $class = new class extends Model {
+            protected $casts = [
+                'website' => Website::class,
+            ];
+        };
+
+        $model = new $class();
+        $model->website = null;
+        $this->assertSame(['website' => null], $model->toArray());
+
+        $model->website = 'google.com';
+        $this->assertSame(['website' => 'http://google.com'], $model->toArray());
     }
 }

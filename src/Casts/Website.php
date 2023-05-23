@@ -3,6 +3,7 @@
 namespace Snaccs\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Snaccs\Support\Url;
 
@@ -11,7 +12,7 @@ use Snaccs\Support\Url;
  *
  * @package Snaccs\Casts
  */
-class Website implements CastsAttributes
+class Website implements CastsAttributes, SerializesCastableAttributes
 {
     /**
      * @param Model       $model
@@ -43,5 +44,12 @@ class Website implements CastsAttributes
     public function set($model, string $key, $value, array $attributes)
     {
         return parse_website($value);
+    }
+
+    public function serialize($model, string $key, $value, array $attributes)
+    {
+        $value = $this->get($model, $key, $value, $attributes);
+
+        return is_null($value) ? null : (string)$value;
     }
 }

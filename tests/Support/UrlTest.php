@@ -88,4 +88,13 @@ class UrlTest extends TestCase
             (string)$url->toHtml(text: 'website', class: 'btn', rel: 'nofollow', target: '_blank')
         );
     }
+
+    /**
+     * @test
+     */
+    public function json_serialization()
+    {
+        $url = new Url('https://google.com');
+        $this->assertSame('"https:\/\/google.com"', json_encode($url));
+    }
 }

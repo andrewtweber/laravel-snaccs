@@ -3,6 +3,7 @@
 namespace Snaccs\Support;
 
 use Illuminate\Support\HtmlString;
+use JsonSerializable;
 
 /**
  * Class Url
@@ -13,7 +14,7 @@ use Illuminate\Support\HtmlString;
  * @property string $domain
  * @property string $subdomain
  */
-class Url
+class Url implements JsonSerializable
 {
     /**
      * TODO: should this URL be validated when it is set?
@@ -28,7 +29,7 @@ class Url
     /**
      * @param string $name
      *
-     * @return null
+     * @return mixed
      */
     public function __get(string $name)
     {
@@ -93,5 +94,13 @@ class Url
             . '>' . $text . '</a>';
 
         return new HtmlString($html);
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonSerialize(): string
+    {
+        return (string)$this;
     }
 }
