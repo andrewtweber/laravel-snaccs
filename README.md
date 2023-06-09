@@ -356,6 +356,19 @@ $rules = [
 // "string_that_exceeds_instagram_30_char_limit" fails
 ```
 
+The latitude and longitude rules validate that the value is numeric and falls within the
+allowed range (-90 to 90 for lat, -180 to 180 for lng).
+
+```php
+use Snaccs\Validation\Rules\Latitude;
+use Snaccs\Validation\Rules\Longitude;
+
+$rules = [
+    'latitude' => ['required', new Latitude()],
+    'longitude' => ['required', new Longitude()],
+];
+```
+
 ## Models
 
 If you use the database to track jobs and failed jobs, you can use the
