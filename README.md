@@ -187,6 +187,7 @@ Usage:
 
 ```php
 use Illuminate\Database\Eloquent\Model;
+use Snaccs\Casts\IpAddress;
 use Snaccs\Casts\PhoneNumber;
 use Snaccs\Casts\Website;
 use Snaccs\Models\Interfaces\PhoneNumberable;
@@ -196,6 +197,7 @@ class Account extends Model implements PhoneNumberable
     protected $casts = [
         'phone' => PhoneNumber::class,
         'website' => Website::class,
+        'ip_address' => IpAddress::class,
     ];
 
     /**
@@ -216,6 +218,11 @@ $account->phone = "1.555.111.2222"; // Stored as '5551112222'
 echo $account->phone; // Displayed as "(555) 111-2222"
 
 $account->website = "google.com"; // Stored as 'http://google.com'
+
+// IP addresses should be stored as a binary(16) or varbinary(16) column
+// Both IPv4 and IPv6 addresses are supported
+$account->ip_address = "127.0.0.1";
+$account->ip_address = "200d:31c4:1905:9eb2:3c7f:c45c:de78:42cd";
 ```
 
 ## Validation
