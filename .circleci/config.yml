@@ -19,6 +19,7 @@ jobs:
       # Download and cache dependencies
 
       # composer cache
+      - run: composer config --no-plugins allow-plugins.php-http/discovery true
       - restore_cache:
           keys:
             # "composer.json" can be used if "composer.lock"
