@@ -16,6 +16,26 @@ class HelpersTest extends TestCase
 {
     /**
      * @test
+     *
+     * @param string|null $input
+     * @param string|null $expected
+     *
+     * @testWith [null, null]
+     *           ["", ""]
+     *           ["car", "a car"]
+     *           ["Car", "a Car"]
+     *           ["apple", "an apple"]
+     *           ["Apple", "an Apple"]
+     *           ["äpple", "an äpple"]
+     *           ["Äpple", "an Äpple"]
+     */
+    public function article(?string $input, ?string $expected)
+    {
+        $this->assertSame($expected, article($input));
+    }
+
+    /**
+     * @test
      */
     public function class_uses_deep()
     {
@@ -257,6 +277,29 @@ class HelpersTest extends TestCase
     public function parse_website(?string $website, ?string $expected)
     {
         $this->assertSame($expected, parse_website($website));
+    }
+
+    /**
+     * @test
+     *
+     * @param int         $quantity
+     * @param string      $singular
+     * @param string|null $plural
+     * @param string|null $expected
+     *
+     * @testWith [0, "cow",  null,    "0 cows"]
+     *           [1, "cow",  null,    "1 cow"]
+     *           [2, "cow",  null,    "2 cows"]
+     *           [0, "deer", null,    "0 deer"]
+     *           [1, "deer", null,    "1 deer"]
+     *           [2, "deer", null,    "2 deer"]
+     *           [0, "deer", "deers", "0 deers"]
+     *           [1, "deer", "deers", "1 deer"]
+     *           [2, "deer", "deers", "2 deers"]
+     */
+    public function quantify(int $quantity, string $singular, ?string $plural, ?string $expected)
+    {
+        $this->assertSame($expected, quantify($quantity, $singular, $plural));
     }
 
     /**

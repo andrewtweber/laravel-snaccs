@@ -49,6 +49,7 @@
     "suggest": {
         "elasticquent/elasticquent": "For indexing",
         "ext-exif": "Needed for EXIF service",
+        "ext-intl": "Needed for some helper functions",
         "jenssegers/agent": "For switching between mobile and desktop",
         "laravel/ui": "For Laravel UI scaffolding",
         "mathiasgrimm/laravel-log-keeper": "To keep logs from taking up too much space",

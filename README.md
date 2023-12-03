@@ -145,6 +145,10 @@ format_bytes(1024); // "1k"
 Some helper methods:
 
 ```php
+// Article
+article("car"); // "a car"
+article("Apple"); // "an Apple"
+
 // If you dispatch too many jobs at once, e.g. emails, you can easily hit 
 // third-party API rate limits, etc. This is a quick and easy way of ensuring
 // that jobs are spaced out with a minimum delay. Each queue will have its
@@ -179,6 +183,11 @@ parse_domain("http://www.google.com/example"); // "google.com"
 parse_handle("ferretpapa"); // "ferretpapa"
 parse_handle("@ferretpapa"); // "ferretpapa"
 parse_handle("instagram.com/ferretpapa/"); // "ferretpapa"
+
+// Quantify
+quantify(0, "cow"); // "0 cows"
+quantify(1, "cow"); // "1 cow"
+quantify(2, "cow"); // "2 cows"
 ```
 
 ## Casts

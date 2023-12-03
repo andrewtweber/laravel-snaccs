@@ -11,6 +11,33 @@ use libphonenumber\PhoneNumberUtil;
 use Snaccs\Models\Job;
 use Snaccs\Services\System;
 
+if (! function_exists('article')) {
+    /**
+     * @param string|null $text
+     *
+     * @return string|null
+     */
+    #[Pure] function article(?string $text): ?string
+    {
+        if (! $text) {
+            return $text;
+        }
+
+        $first = mb_strtolower(mb_substr($text, 0, 1));
+
+        $transliterator = Transliterator::createFromRules(
+            ':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;',
+            Transliterator::FORWARD
+        );
+
+        $first = $transliterator->transliterate($first);
+
+        return in_array($first, ['a', 'e', 'i', 'o', 'u'])
+            ? 'an ' . $text
+            : 'a ' . $text;
+    }
+}
+
 if (! function_exists('class_uses_deep')) {
     /**
      * @param mixed $class
@@ -40,6 +67,32 @@ if (! function_exists('class_uses_deep')) {
         }
 
         return array_unique($traits);
+    }
+}
+
+if (! function_exists('comma_separated')) {
+    /**
+     * @param string[] $items
+     *
+     * @return string|null
+     */
+    #[Pure] function comma_separated(array $items): ?string
+    {
+        if (count($items) === 0) {
+            return null;
+        }
+
+        if (count($items) === 1) {
+            return $items[0];
+        }
+
+        if (count($items) === 2) {
+            return $items[0] . ' and ' . $items[1];
+        }
+
+        $last = array_pop($items);
+
+        return implode(', ', $items) . ', and ' . $last;
     }
 }
 
@@ -79,32 +132,6 @@ if (! function_exists('dispatch_with_delay')) {
         }
 
         return dispatch($job);
-    }
-}
-
-if (! function_exists('comma_separated')) {
-    /**
-     * @param string[] $items
-     *
-     * @return string|null
-     */
-    #[Pure] function comma_separated(array $items): ?string
-    {
-        if (count($items) === 0) {
-            return null;
-        }
-
-        if (count($items) === 1) {
-            return $items[0];
-        }
-
-        if (count($items) === 2) {
-            return $items[0] . ' and ' . $items[1];
-        }
-
-        $last = array_pop($items);
-
-        return implode(', ', $items) . ', and ' . $last;
     }
 }
 
@@ -352,6 +379,22 @@ if (! function_exists('parse_website')) {
         }
 
         return $value;
+    }
+}
+
+if (! function_exists('quantify')) {
+    /**
+     * @param int         $number
+     * @param string      $singular
+     * @param string|null $plural
+     *
+     * @return string
+     */
+    #[Pure] function quantify(int $number, string $singular, ?string $plural = null): string
+    {
+        $plural ??= Str::plural($singular);
+
+        return $number . ' ' . ($number === 1 ? $singular : $plural);
     }
 }
 
