@@ -27,10 +27,9 @@ class FailedJob extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'payload' => 'json',
+        'payload'   => 'json',
+        'failed_at' => 'datetime',
     ];
-
-    protected $dates = ['failed_at'];
 
     /**
      * @param string $value

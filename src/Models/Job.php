@@ -27,8 +27,9 @@ class Job extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'payload' => 'json',
+        'payload'      => 'json',
+        'reserved_at'  => 'datetime',
+        'available_at' => 'datetime',
+        'created_at'   => 'datetime',
     ];
-
-    protected $dates = ['reserved_at', 'available_at', 'created_at'];
 }
