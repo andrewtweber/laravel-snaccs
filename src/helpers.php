@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use libphonenumber\NumberParseException;
@@ -100,11 +101,11 @@ if (! function_exists('dispatch_with_delay')) {
     /**
      * Dispatch a job with a delay
      *
-     * @param ShouldQueue|Queueable $job
-     * @param int                   $delay
-     * @param int|null              $initial_delay
+     * @param ShouldQueue $job
+     * @param int         $delay
+     * @param int|null    $initial_delay
      *
-     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     * @return PendingDispatch
      */
     function dispatch_with_delay(ShouldQueue $job, int $delay = 15, int $initial_delay = null)
     {
@@ -112,7 +113,7 @@ if (! function_exists('dispatch_with_delay')) {
             throw new InvalidArgumentException(get_class($job) . " does not use Queueable trait");
         }
 
-        /** @var Job $last_job */
+        /** @var ?Job $last_job */
         $last_job = Job::where('queue', $job->queue ?? 'default')
             ->orderBy('available_at', 'desc')
             ->first();

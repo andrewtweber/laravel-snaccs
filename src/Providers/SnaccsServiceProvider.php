@@ -30,6 +30,7 @@ class SnaccsServiceProvider extends ServiceProvider
                 $system     => config_path('system.php'),
                 $views      => resource_path('views/vendor/snaccs'),
             ]);
+        /* @phpstan-ignore-next-line */
         } elseif ($this->app instanceof LumenApplication) {
             $this->app->configure('formatting');
             $this->app->configure('system');

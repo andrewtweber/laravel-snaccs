@@ -43,7 +43,7 @@ class UrlTest extends TestCase
         $this->assertSame('start.adsense', $url->subdomain);
 
         $this->expectError();
-        $this->assertNull($url->nonexistent_field);
+        $this->assertNull($url->nonexistent_field); /** @phpstan-ignore-line */ // property.notFound
     }
 
     /**

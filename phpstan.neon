@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 4
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        - '#Attribute class JetBrains#'
+        -
+            message: '#Call to method configure\(\) on an unknown class Laravel\\Lumen\\Application#'
+            path: src/Providers
+        -
+            message: '#Call to an undefined method Illuminate\\Contracts\\Queue\\ShouldQueue::delay\(\)#'
+            path: src/helpers.php
+        -
+            message: "#Relation 'validation' is not found#"
+            path: src/Validation/Rules

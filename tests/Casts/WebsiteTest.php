@@ -77,7 +77,7 @@ class WebsiteTest extends TestCase
         };
 
         $model = new $class();
-        $model->website = null;
+        $model->website = null; /** @phpstan-ignore-line */ // property.notFound
         $this->assertSame(['website' => null], $model->toArray());
 
         $model->website = 'google.com';

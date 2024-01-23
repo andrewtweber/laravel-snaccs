@@ -121,7 +121,7 @@ class PhoneNumberTest extends LaravelTestCase
      * @test
      *
      * @param string|null $number
-     * @param string|null $country
+     * @param string|null $country_code
      * @param string|null $expected
      *
      * @testWith [null,                     "US", null]
@@ -155,7 +155,6 @@ class PhoneNumberTest extends LaravelTestCase
      * @test
      *
      * @param string|null $number
-     * @param string|null $expected
      *
      * @testWith ["   "]
      *           ["---"]

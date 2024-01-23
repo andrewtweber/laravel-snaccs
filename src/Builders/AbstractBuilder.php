@@ -50,7 +50,7 @@ abstract class AbstractBuilder
      *
      * @return self
      */
-    public function setData(array $data = []): static
+    public function setData(array $data = []): self
     {
         $this->data = $data;
 
@@ -60,9 +60,9 @@ abstract class AbstractBuilder
     /**
      * @param Authenticatable|null $user
      *
-     * @return $this
+     * @return self
      */
-    public function setUser(?Authenticatable $user = null): static
+    public function setUser(?Authenticatable $user = null): self
     {
         $this->user = $user;
 
@@ -72,9 +72,9 @@ abstract class AbstractBuilder
     /**
      * Call this in the constructor if this builder should never index.
      *
-     * @return $this
+     * @return self
      */
-    public function disableIndexing(): static
+    public function disableIndexing(): self
     {
         $this->index = false;
 
@@ -82,9 +82,9 @@ abstract class AbstractBuilder
     }
 
     /**
-     * @return $this
+     * @return self
      */
-    public function enableIndexing(): static
+    public function enableIndexing(): self
     {
         $this->index = true;
 
