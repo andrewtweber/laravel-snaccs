@@ -60,7 +60,10 @@
         "vinkla/hashids": "For hashing IDs"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "autoload": {
         "psr-4": {
