@@ -53,13 +53,17 @@ class Breadcrumb implements Arrayable
     }
 
     /**
+     * This should generally not be called directly, instead a `BreadcrumbCollection` of `Breadcrumb`
+     * should be cast to array because that will set the correct position.
+     *
+     * @deprecated
      * @return array
      */
     public function toArray()
     {
         return [
             '@type'    => 'ListItem',
-            'position' => $this->position,
+            'position' => $this->position ?? 1,
             'item'     => [
                 '@id'  => url($this->url),
                 'name' => $this->label,
