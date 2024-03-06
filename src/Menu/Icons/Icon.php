@@ -23,8 +23,8 @@ abstract class Icon
      *
      * @return HtmlString
      */
-    public function html(?string $classes = null): HtmlString
+    final public function html(?string $classes = null): HtmlString
     {
-        return new HtmlString($this->render($classes));
+        return new HtmlString(trim($this->render($classes)));
     }
 }
