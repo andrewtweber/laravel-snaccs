@@ -22,7 +22,7 @@ class PhoneNumber implements CastsAttributes
      * @param string $value
      * @param array  $attributes
      *
-     * @return string
+     * @return string|null
      */
     public function get($model, string $key, $value, array $attributes)
     {
@@ -41,7 +41,7 @@ class PhoneNumber implements CastsAttributes
      * @param string $value
      * @param array  $attributes
      *
-     * @return string
+     * @return string|null
      */
     public function set($model, string $key, $value, array $attributes)
     {

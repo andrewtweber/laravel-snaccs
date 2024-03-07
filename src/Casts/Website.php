@@ -39,7 +39,7 @@ class Website implements CastsAttributes, SerializesCastableAttributes
      * @param string|null $value
      * @param array       $attributes
      *
-     * @return string
+     * @return string|null
      */
     public function set($model, string $key, $value, array $attributes)
     {
