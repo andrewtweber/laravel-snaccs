@@ -201,15 +201,17 @@ Usage:
 use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\IpAddress;
 use Snaccs\Casts\PhoneNumber;
+use Snaccs\Casts\Time;
 use Snaccs\Casts\Website;
 use Snaccs\Models\Interfaces\PhoneNumberable;
 
 class Account extends Model implements PhoneNumberable
 {
     protected $casts = [
-        'phone' => PhoneNumber::class,
-        'website' => Website::class,
         'ip_address' => IpAddress::class,
+        'phone' => PhoneNumber::class,
+        'time' => Time::class,
+        'website' => Website::class,
     ];
 
     /**
@@ -226,15 +228,18 @@ class Account extends Model implements PhoneNumberable
 
 // Examples:
 $account = new Account();
-$account->phone = "1.555.111.2222"; // Stored as '5551112222'
-echo $account->phone; // Displayed as "(555) 111-2222"
-
-$account->website = "google.com"; // Stored as 'http://google.com'
 
 // IP addresses should be stored as a binary(16) or varbinary(16) column
 // Both IPv4 and IPv6 addresses are supported
 $account->ip_address = "127.0.0.1";
 $account->ip_address = "200d:31c4:1905:9eb2:3c7f:c45c:de78:42cd";
+
+$account->phone = "1.555.111.2222"; // Stored as '5551112222'
+echo $account->phone; // Displayed as "(555) 111-2222"
+
+$account->time = "11:00 pm"; // Stored as "23:00:00"
+
+$account->website = "google.com"; // Stored as 'http://google.com'
 ```
 
 ## Validation
@@ -276,7 +281,21 @@ $rules = [
 ];
 ```
 
-The Website casting should be paired with the Website validation rule.
+The Time cast should be paired with the Time validation rule.
+
+```php
+use Snaccs\Validation\Rules\Time;
+
+$rules = [
+    'time' => [new Time()],
+];
+// "0:00:00"  passes
+// "12:00 pm" passes
+// "13:00 pm" fails
+// "25:00:00" fails
+```
+
+The Website cast should be paired with the Website validation rule.
 This validates the URL but allows them to omit the scheme (defaults to http).
 It also allows you to restrict to specific domains.
 

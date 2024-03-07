@@ -75,7 +75,9 @@ class TimeTest extends LaravelTestCase
      *
      * @param string|null $value
      *
-     * @testWith ["12 am"]
+     * @testWith ["11 am"]
+     *           ["12 AM"]
+     *           ["11 PM"]
      *           ["12 pm"]
      */
     public function failsOdd(mixed $value)
@@ -94,6 +96,8 @@ class TimeTest extends LaravelTestCase
      *           [" "]
      *           ["000:00"]
      *           ["0:00:00:00"]
+     *           ["0:61"]
+     *           ["0:00:70"]
      *           ["asdf"]
      *           ["25"]
      *           ["0 am"]
