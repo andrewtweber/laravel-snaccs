@@ -208,10 +208,11 @@ use Snaccs\Models\Interfaces\PhoneNumberable;
 class Account extends Model implements PhoneNumberable
 {
     protected $casts = [
-        'ip_address' => IpAddress::class,
-        'phone' => PhoneNumber::class,
-        'time' => Time::class,
-        'website' => Website::class,
+        'ip_address'  => IpAddress::class,
+        'phone'       => PhoneNumber::class,
+        'time'        => Time::class,
+        'time_no_sec' => Time::class . ':H:i',
+        'website'     => Website::class,
     ];
 
     /**
@@ -238,6 +239,8 @@ $account->phone = "1.555.111.2222"; // Stored as '5551112222'
 echo $account->phone; // Displayed as "(555) 111-2222"
 
 $account->time = "11:00 pm"; // Stored as "23:00:00"
+$account->time_no_sec = "1:00"; // Stored as "01:00:00"
+echo $account->time_no_sec; // Displayed as "01:00"
 
 $account->website = "google.com"; // Stored as 'http://google.com'
 ```

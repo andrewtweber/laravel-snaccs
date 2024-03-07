@@ -25,6 +25,17 @@ class TimeTest extends TestCase
 
     /**
      * @test
+     */
+    public function get_value_with_format()
+    {
+        $cast = new Time('H:i');
+
+        $this->assertNull($cast->get(null, "", null, []));
+        $this->assertSame("12:00", $cast->get(null, "", "12:00:00", []));
+    }
+
+    /**
+     * @test
      *
      * @param string|null $time
      * @param string|null $expected

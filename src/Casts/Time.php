@@ -14,6 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 class Time implements CastsAttributes
 {
     /**
+     * @param string $format - the format when accessing (the format when mutating is always H:i:s)
+     */
+    public function __construct(
+        public string $format = 'H:i:s'
+    ) {
+    }
+
+    /**
      * @param Model       $model
      * @param string      $key
      * @param string|null $value
@@ -27,7 +35,7 @@ class Time implements CastsAttributes
             return null;
         }
 
-        return $value;
+        return Carbon::createFromTimeString($value)->format($this->format);
     }
 
     /**
