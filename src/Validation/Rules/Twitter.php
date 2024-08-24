@@ -17,5 +17,5 @@ class Twitter extends Handle
 
     protected int $max = 15;
 
-    protected array $allowed_domains = ['twitter.com'];
+    protected array $allowed_domains = ['twitter.com', 'x.com'];
 }

@@ -29,6 +29,8 @@ class TwitterTest extends TestCase
      *           ["twitter.com/@ferretpapa"]
      *           ["twitter.com/#!ferretpapa"]
      *           ["https://twitter.com/ferretpapa"]
+     *           ["x.com/ferretpapa"]
+     *           ["https://x.com/ferretpapa"]
      *           ["nottoolong12345"]
      *           ["@nottoolong12345"]
      */
