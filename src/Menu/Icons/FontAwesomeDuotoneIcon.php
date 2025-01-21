@@ -42,8 +42,8 @@ class FontAwesomeDuotoneIcon extends Icon
     public function styles(): array
     {
         return [
-            '--fa-primary-opacity' => $this->primary_opacity,
-            '--fa-secondary-opacity' => $this->secondary_opacity,
+            '--fa-primary-opacity' => (string)$this->primary_opacity,
+            '--fa-secondary-opacity' => (string)$this->secondary_opacity,
             '--fa-primary-color' => $this->primary_color,
             '--fa-secondary-color' => $this->secondary_color,
         ];
