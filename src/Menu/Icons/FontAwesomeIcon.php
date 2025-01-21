@@ -36,7 +36,7 @@ class FontAwesomeIcon extends Icon
     {
         return view('snaccs::menu.icons.fontawesome')
             ->with('icon', $this)
-            ->with('classes', array_merge($this->classes(), [$classes ?? 'me-md-2']))
+            ->with('classes', implode(' ', array_merge($this->classes(), [$classes ?? 'me-md-2'])))
             ->render();
     }
 }

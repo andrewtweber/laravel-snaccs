@@ -58,7 +58,7 @@ class FontAwesomeDuotoneIcon extends Icon
     {
         return view('snaccs::menu.icons.fontawesome_duotone')
             ->with('icon', $this)
-            ->with('classes', array_merge($this->classes(), [$classes ?? 'me-md-2']))
+            ->with('classes', implode(' ', array_merge($this->classes(), [$classes ?? 'me-md-2'])))
             ->render();
     }
 }
