@@ -18,6 +18,16 @@ class FontAwesomeIcon extends Icon
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function classes(): array
+    {
+        return [
+            $this->icon,
+        ];
+    }
+
+    /**
      * @param string|null $classes
      *
      * @return string
@@ -26,7 +36,7 @@ class FontAwesomeIcon extends Icon
     {
         return view('snaccs::menu.icons.fontawesome')
             ->with('icon', $this)
-            ->with('classes', $classes)
+            ->with('classes', array_merge($this->classes(), [$classes ?? 'me-md-2']))
             ->render();
     }
 }

@@ -11,6 +11,10 @@ class FontAwesomeDuotoneIcon extends Icon
 {
     /**
      * @param string $icon
+     * @param string $primary_color
+     * @param string $secondary_color
+     * @param float $primary_opacity
+     * @param float $secondary_opacity
      */
     public function __construct(
         public string $icon,
@@ -22,6 +26,30 @@ class FontAwesomeDuotoneIcon extends Icon
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function classes(): array
+    {
+        return [
+            'fad',
+            $this->icon,
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function styles(): array
+    {
+        return [
+            '--fa-primary-opacity' => $this->primary_opacity,
+            '--fa-secondary-opacity' => $this->secondary_opacity,
+            '--fa-primary-color' => $this->primary_color,
+            '--fa-secondary-color' => $this->secondary_color,
+        ];
+    }
+
+    /**
      * @param string|null $classes
      *
      * @return string
@@ -30,7 +58,7 @@ class FontAwesomeDuotoneIcon extends Icon
     {
         return view('snaccs::menu.icons.fontawesome_duotone')
             ->with('icon', $this)
-            ->with('classes', $classes)
+            ->with('classes', array_merge($this->classes(), [$classes ?? 'me-md-2']))
             ->render();
     }
 }

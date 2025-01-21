@@ -1,3 +1,1 @@
-<i class="fad {{ $icon->icon }} {{ $classes ?? 'mr-md-2' }}"
-   style="--fa-primary-opacity:{{ $icon->primary_opacity }}; --fa-secondary-opacity:{{ $icon->secondary_opacity }};
-          --fa-primary-color:{{ $icon->primary_color }}; --fa-secondary-color:{{ $icon->secondary_color }}"></i>
+<i class="{{ implode(' ', $classes) }}" style="{{ $icon->styleString() }}"></i>

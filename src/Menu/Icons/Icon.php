@@ -19,6 +19,36 @@ abstract class Icon
     abstract public function render(?string $classes = null): string;
 
     /**
+     * @return array<int, string>
+     */
+    public function classes(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function styles(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function styleString(): string
+    {
+        $styles = [];
+
+        foreach ($this->styles() as $property => $value) {
+            $styles[] = "{$property}:{$value}";
+        }
+
+        return implode(';', $styles);
+    }
+
+    /**
      * @param string|null $classes
      *
      * @return HtmlString
