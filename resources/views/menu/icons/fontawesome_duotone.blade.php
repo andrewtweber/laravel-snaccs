@@ -1,1 +1,1 @@
-<i class="{{ implode(' ', $classes) }}" style="{{ $icon->styleString() }}"></i>
+<i class="{{ $classes }}" style="{{ $icon->styleString() }}"></i>
