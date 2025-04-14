@@ -107,7 +107,7 @@ if (! function_exists('dispatch_with_delay')) {
      *
      * @return PendingDispatch
      */
-    function dispatch_with_delay(ShouldQueue $job, int $delay = 15, int $initial_delay = null)
+    function dispatch_with_delay(ShouldQueue $job, int $delay = 15, ?int $initial_delay = null)
     {
         if (! in_array(Queueable::class, class_uses_deep($job))) {
             throw new InvalidArgumentException(get_class($job) . " does not use Queueable trait");
