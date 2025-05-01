@@ -33,13 +33,15 @@ class MenuItem
      * @param string|null       $section
      * @param Icon|string|null  $icon
      * @param mixed             $permission
+     * @param array             $metadata
      */
     public function __construct(
         public HtmlString|string $label,
         public ?string $url,
         public ?string $section = null,
         Icon|string|null $icon = null,
-        public mixed $permission = null
+        public mixed $permission = null,
+        public array $metadata = [],
     ) {
         $this->children = collect();
         $this->icon = is_string($icon) ? new FontAwesomeIcon($icon) : $icon;
