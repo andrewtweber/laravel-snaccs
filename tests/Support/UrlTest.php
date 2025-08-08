@@ -5,6 +5,7 @@ namespace Snaccs\Tests\Support;
 use Snaccs\Support\Url;
 use Snaccs\Support\UrlAttribute;
 use Snaccs\Tests\TestCase;
+use ValueError;
 
 /**
  * Class UrlTest
@@ -42,8 +43,8 @@ class UrlTest extends TestCase
         $this->assertSame('start.adsense.google.com', $url->domain);
         $this->assertSame('start.adsense', $url->subdomain);
 
-        $this->expectError();
-        $this->assertNull($url->nonexistent_field); /** @phpstan-ignore-line */ // property.notFound
+        $this->expectException(ValueError::class);
+        $this->assertNull($url->nonexistent_field); // @phpstan-ignore-line property.notFound
     }
 
     /**

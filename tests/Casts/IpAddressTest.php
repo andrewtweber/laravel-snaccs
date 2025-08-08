@@ -4,6 +4,7 @@ namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\IpAddress;
 use Snaccs\Tests\TestCase;
+use Snaccs\Tests\TestModel;
 
 /**
  * Class IpAddressTest
@@ -19,8 +20,8 @@ class IpAddressTest extends TestCase
     {
         $cast = new IpAddress();
 
-        $this->assertNull($cast->get(null, "", null, []));
-        $this->assertNull($cast->set(null, "", null, []));
+        $this->assertNull($cast->get(new TestModel(), "", null, []));
+        $this->assertNull($cast->set(new TestModel(), "", null, []));
     }
 
     /**
@@ -37,13 +38,13 @@ class IpAddressTest extends TestCase
         ];
 
         foreach ($ips as $ip) {
-            $result = $cast->set(null, "", $ip, []);
+            $result = $cast->set(new TestModel(), "", $ip, []);
             $this->assertSame($ip, inet_ntop($result));
 
             $length = strlen(bin2hex($result)) / 2;
             $this->assertTrue($length <= 16);
 
-            $result = $cast->get(null, "", $result, []);
+            $result = $cast->get(new TestModel(), "", $result, []);
             $this->assertSame($ip, $result);
         }
     }
@@ -66,13 +67,13 @@ class IpAddressTest extends TestCase
         foreach ($ips as $ip) {
             $ip = inet_ntop(inet_pton($ip));
 
-            $result = $cast->set(null, "", $ip, []);
+            $result = $cast->set(new TestModel(), "", $ip, []);
             $this->assertSame($ip, inet_ntop($result));
 
             $length = strlen(bin2hex($result)) / 2;
             $this->assertSame(16, $length); // IPv6 will always be exactly 16 binary characters
 
-            $result = $cast->get(null, "", $result, []);
+            $result = $cast->get(new TestModel(), "", $result, []);
             $this->assertSame($ip, $result);
         }
     }
@@ -108,12 +109,12 @@ class IpAddressTest extends TestCase
         ];
 
         foreach ($pairs as $pair) {
-            $result1 = $cast->set(null, "", $pair[0], []);
-            $result2 = $cast->set(null, "", $pair[1], []);
+            $result1 = $cast->set(new TestModel(), "", $pair[0], []);
+            $result2 = $cast->set(new TestModel(), "", $pair[1], []);
             $this->assertSame($result1, $result2);
 
-            $result1 = $cast->get(null, "", $result1, []);
-            $result2 = $cast->get(null, "", $result2, []);
+            $result1 = $cast->get(new TestModel(), "", $result1, []);
+            $result2 = $cast->get(new TestModel(), "", $result2, []);
             $this->assertSame($result1, $result2);
         }
     }

@@ -27,7 +27,7 @@ class CoordinatesTest extends TestCase
         $this->assertSame('10,-20', (string)$coords);
 
         // String cast trims trailing 0s in decimal places
-        $coords = new Coordinates('10.200', '-20.130');
+        $coords = new Coordinates('10.200', '-20.130'); // @phpstan-ignore-line argument.type
         $this->assertSame('10.2,-20.13', (string)$coords);
 
         // Rounds to 6th decimal place and then truncates trailing zeroes

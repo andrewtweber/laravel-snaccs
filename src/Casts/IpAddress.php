@@ -20,7 +20,7 @@ class IpAddress implements CastsAttributes
      *
      * @return string|null
      */
-    public function get($model, string $key, $value, array $attributes)
+    public function get(Model $model, string $key, mixed $value, array $attributes)
     {
         return $value === null ? null : inet_ntop($value);
     }
@@ -35,7 +35,7 @@ class IpAddress implements CastsAttributes
      *
      * @return string|null
      */
-    public function set($model, string $key, $value, array $attributes)
+    public function set(Model $model, string $key, mixed $value, array $attributes)
     {
         return $value === null ? null : inet_pton($value);
     }

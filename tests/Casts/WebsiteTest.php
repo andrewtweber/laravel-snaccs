@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Snaccs\Casts\Website;
 use Snaccs\Support\Url;
 use Snaccs\Tests\TestCase;
+use Snaccs\Tests\TestModel;
 
 /**
  * Class WebsiteTest
@@ -29,7 +30,7 @@ class WebsiteTest extends TestCase
     {
         $cast = new Website();
 
-        $result = $cast->get(null, "", $value, []);
+        $result = $cast->get(new TestModel(), "", $value, []);
 
         if ($value === null) {
             $this->assertNull($result);
@@ -62,7 +63,7 @@ class WebsiteTest extends TestCase
     {
         $cast = new Website();
 
-        $this->assertSame($expected, $cast->set(null, "", $url, []));
+        $this->assertSame($expected, $cast->set(new TestModel(), "", $url, []));
     }
 
     /**
@@ -77,7 +78,7 @@ class WebsiteTest extends TestCase
         };
 
         $model = new $class();
-        $model->website = null; /** @phpstan-ignore-line */ // property.notFound
+        $model->website = null; // @phpstan-ignore-line property.notFound
         $this->assertSame(['website' => null], $model->toArray());
 
         $model->website = 'google.com';

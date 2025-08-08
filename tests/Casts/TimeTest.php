@@ -4,6 +4,7 @@ namespace Snaccs\Tests\Casts;
 
 use Snaccs\Casts\Time;
 use Snaccs\Tests\TestCase;
+use Snaccs\Tests\TestModel;
 
 /**
  * Class TimeTest
@@ -19,8 +20,8 @@ class TimeTest extends TestCase
     {
         $cast = new Time();
 
-        $this->assertNull($cast->get(null, "", null, []));
-        $this->assertSame("12:00:00", $cast->get(null, "", "12:00:00", []));
+        $this->assertNull($cast->get(new TestModel(), "", null, []));
+        $this->assertSame("12:00:00", $cast->get(new TestModel(), "", "12:00:00", []));
     }
 
     /**
@@ -30,8 +31,8 @@ class TimeTest extends TestCase
     {
         $cast = new Time('H:i');
 
-        $this->assertNull($cast->get(null, "", null, []));
-        $this->assertSame("12:00", $cast->get(null, "", "12:00:00", []));
+        $this->assertNull($cast->get(new TestModel(), "", null, []));
+        $this->assertSame("12:00", $cast->get(new TestModel(), "", "12:00:00", []));
     }
 
     /**
@@ -53,6 +54,6 @@ class TimeTest extends TestCase
     {
         $cast = new Time();
 
-        $this->assertSame($expected, $cast->set(null, "", $time, []));
+        $this->assertSame($expected, $cast->set(new TestModel(), "", $time, []));
     }
 }

@@ -22,7 +22,7 @@ class Website implements CastsAttributes, SerializesCastableAttributes
      *
      * @return Url|null
      */
-    public function get($model, string $key, $value, array $attributes)
+    public function get(Model $model, string $key, mixed $value, array $attributes)
     {
         if ($value === null) {
             return null;
@@ -41,12 +41,12 @@ class Website implements CastsAttributes, SerializesCastableAttributes
      *
      * @return string|null
      */
-    public function set($model, string $key, $value, array $attributes)
+    public function set(Model $model, string $key, mixed $value, array $attributes)
     {
         return parse_website($value);
     }
 
-    public function serialize($model, string $key, $value, array $attributes)
+    public function serialize(Model $model, string $key, mixed $value, array $attributes)
     {
         $value = $this->get($model, $key, $value, $attributes);
 
