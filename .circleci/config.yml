@@ -15,7 +15,7 @@ jobs:
   build_backend:
     docker:
       # Specify the version you desire here
-      - image: cimg/php:8.1
+      - image: cimg/php:8.2
     steps:
       - checkout
       - run:
@@ -43,7 +43,7 @@ jobs:
 
   test_backend:
     docker:
-      - image: cimg/php:8.1
+      - image: cimg/php:8.2
     steps:
       - *attach_workspace
       - run:
@@ -52,7 +52,7 @@ jobs:
 
   inspect_backend:
     docker:
-      - image: cimg/php:8.1
+      - image: cimg/php:8.2
     steps:
       - *attach_workspace
       - run:
